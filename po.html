@@ -205,18 +205,13 @@ async function load(){
     <div class="card" style="border:2px solid ${arrived?'#16a34a':'var(--brand)'};background:${arrived?'#f0fdf4':'var(--brand-50)'}">
       <div style="font-weight:700;font-size:15px;color:${arrived?'#16a34a':'var(--brand-700)'};margin-bottom:4px">${headTxt}</div>
       <div style="font-size:12px;color:var(--ink-soft);margin-bottom:14px">${subTxt}</div>
-      <div style="display:flex;gap:4px;margin-bottom:16px">${stepsHtml}</div>
       <div style="border-top:1px solid var(--border-soft);padding-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px 28px">
         <div><div style="${dk}">เลข Tracking จีน</div><div style="${dvm}">${esc(d.trackingNo||'-')}</div></div>
-        <div><div style="${dk}">ชื่อสินค้า</div><div style="${dv}">${esc(first.name||'-')}</div></div>
-        <div><div style="${dk}">น้ำหนักสินค้า (กรัม)</div><div style="${dvm}">${d.weight?Number(d.weight).toLocaleString():'-'}</div></div>
         <div><div style="${dk}">ร้านค้า</div><div style="${dv}">${esc(d.shopName||first.shop||'-')}</div></div>
         <div><div style="${dk}">การจัดส่ง</div><div style="${dv}">${ship==='เรือ'?'🚢 ทางเรือ':(ship==='รถ'?'🚚 ทางรถ':esc(ship))}</div></div>
-        <div><div style="${dk}">สี / ขนาด</div><div style="${dv}">${esc([first.color,first.size].filter(Boolean).join(' / ')||'-')}</div></div>
         <div><div style="${dk}">วันที่สั่งซื้อ</div><div style="${dv}">${fmtDateTime(d.createdAt)}</div></div>
         <div><div style="${dk}">หมายเหตุร้านค้า</div><div style="${dv}">${esc(d.shopNote||'-')}</div></div>
         <div><div style="${dk}">จำนวนสินค้า</div><div style="${dv}">${qtyAll} ชิ้น</div></div>
-        <div><div style="${dk}">เวลาที่ร้านค้าส่ง</div><div style="${dv}">${d.shopShipAt?fmtDateTime(d.shopShipAt):'-'}</div></div>
       </div>
     </div>` : '';
 
