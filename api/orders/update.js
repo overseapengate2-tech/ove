@@ -154,6 +154,14 @@ export default async function handler(req, res) {
   const prev = await getOrder(no);
   /* ฝากจ่ายเงิน (OVE) ชำระสำเร็จ → ใช้ข้อความ "ฝากจ่ายเงินสำเร็จ" */
   if (patch.status === 'PAID' && prev?.source === 'pay') patch.statusText = 'ฝากจ่ายเงินสำเร็จ';
+  /* ถึงโกดังไทย (DONE) → เข้ารายการบิลค่าขนส่งอัตโนมัติ (set shipStatus = TH_WH)
+     ยกเว้นออเดอร์ฝากจ่ายเงิน (ไม่มีขนส่ง) หรือถ้าเลยขั้นไปแล้ว (กำลังนำส่ง/จัดส่งสำเร็จ) */
+  if (patch.status === 'DONE' && patch.shipStatus === undefined && prev?.source !== 'pay') {
+    const curShip = prev?.shipStatus;
+    if (!['TH_WH', 'DELIVERING', 'DELIVERED'].includes(curShip)) {
+      patch.shipStatus = 'TH_WH';
+    }
+  }
   const updated = await updateOrder(no, patch);
   if (!updated) return res.status(404).json({ ok: false, error: 'ไม่พบออเดอร์นี้' });
 
