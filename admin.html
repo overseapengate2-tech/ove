@@ -1842,6 +1842,24 @@ let membersCache = [];
 
 $('membersBtn').addEventListener('click', openMembers);
 
+async function backfillCodes(){
+  if(!confirm('เติมรหัสสมาชิก OP-XXXX ให้บัญชีเก่าที่ยังไม่มีรหัส?\n\n(เรียงตามวันสมัคร — คนสมัครก่อนจะได้เลขน้อยกว่า)')) return;
+  const btn = document.getElementById('backfillCodesBtn');
+  btn.disabled = true; btn.textContent = 'กำลังเติม…';
+  try{
+    const r = await fetch(`${API_BASE}/api/address`, {
+      method:'POST', headers:{ 'Content-Type':'application/json', 'x-admin-key': adminKey },
+      body: JSON.stringify({ adminBackfillMemberCodes: true })
+    });
+    const j = await r.json();
+    if(!j.ok) throw new Error(j.error || 'เติมไม่สำเร็จ');
+    toast(`✅ เติมรหัสให้ ${j.assigned} คน (ข้าม ${j.skipped} จาก ${j.total} ทั้งหมด)`);
+    // reload members list to show new codes
+    openMembers();
+  }catch(err){ toast('❌ ' + err.message); }
+  btn.disabled = false; btn.textContent = '🎫 เติมรหัสสมาชิกให้ทุกคน';
+}
+
 async function resetAllCredits(){
   if(!confirm('⚠️ ยืนยันลบเครดิตของสมาชิก "ทุกคน"?\n\nยอดเงินในกระเป๋าจะกลายเป็น 0 ทั้งหมด (ออเดอร์/ที่อยู่/สมาชิกไม่ถูกลบ)\n\nการกระทำนี้ย้อนกลับไม่ได้')) return;
   const btn = document.getElementById('resetAllCreditsBtn');
@@ -1919,10 +1937,12 @@ function renderMembers(){
       <input type="text" id="memberSearch" placeholder="🔍 ค้นหา ชื่อ / เลขบัตร / อีเมล…" style="flex:1;min-width:220px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px"/>
       <button class="btn btn-sm" id="resetAllKycBtn" style="background:#b3392f;color:#fff;border:none;font-weight:700;white-space:nowrap" title="ลบข้อมูลยืนยันตัวตนของสมาชิกทุกคน">🔄 รีเซ็ตยืนยันตัวตนทั้งหมด</button>
       <button class="btn btn-sm" id="resetAllCreditsBtn" style="background:#b3392f;color:#fff;border:none;font-weight:700;white-space:nowrap" title="ลบเครดิตของสมาชิกทุกคน (ไม่แตะออเดอร์/ที่อยู่)">💰 รีเซ็ตเครดิตทั้งหมด</button>
+      <button class="btn btn-sm" id="backfillCodesBtn" style="background:#2e7d4f;color:#fff;border:none;font-weight:700;white-space:nowrap" title="เติมรหัส OP-XXXX ให้สมาชิกเก่าที่ยังไม่มี">🎫 เติมรหัสสมาชิกให้ทุกคน</button>
     </div>
     <div id="memberList">${rows}</div>`;
   document.getElementById('resetAllKycBtn').addEventListener('click', resetAllKyc);
   document.getElementById('resetAllCreditsBtn').addEventListener('click', resetAllCredits);
+  document.getElementById('backfillCodesBtn').addEventListener('click', backfillCodes);
   const search = document.getElementById('memberSearch');
   search.addEventListener('input', () => {
     const f = search.value.trim().toLowerCase();
