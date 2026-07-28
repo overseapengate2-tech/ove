@@ -1092,7 +1092,7 @@ body{font-variant-numeric:tabular-nums}
 
     <!-- LOGIN FORM -->
     <div id="loginFormBox" style="display:block">
-      <input id="liEmail" type="email" placeholder="อีเมล" autocomplete="email" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
+      <input id="liEmail" type="text" placeholder="อีเมล หรือ เบอร์โทร" autocomplete="username" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <input id="liPassword" type="password" placeholder="รหัสผ่าน" autocomplete="current-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <div class="modal-help" id="liHelp" style="min-height:20px;margin-top:6px"></div>
       <button class="btn btn-primary" id="liSubmit" type="button" style="min-width:220px;margin-top:6px">🔑 เข้าสู่ระบบ</button>
@@ -1826,13 +1826,13 @@ function switchAuthView(mode){
 }
 
 async function doEmailLogin(){
-  const email = $('#liEmail').value.trim().toLowerCase();
+  const identifier = $('#liEmail').value.trim();
   const password = $('#liPassword').value;
   const help = $('#liHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
-  if(!email || !password){ help.textContent = 'กรุณากรอกอีเมลและรหัสผ่าน'; return; }
+  if(!identifier || !password){ help.textContent = 'กรุณากรอกอีเมล/เบอร์โทร และรหัสผ่าน'; return; }
   const btn = $('#liSubmit'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังเข้าสู่ระบบ…';
   try{
-    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ login:{ email, password } }) });
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ login:{ identifier, password } }) });
     const j = await r.json();
     if(!j.ok) throw new Error(apiErrText(j.error, 'เข้าสู่ระบบไม่สำเร็จ'));
     const user = j.user;
