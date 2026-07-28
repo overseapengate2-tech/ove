@@ -8,6 +8,7 @@
 
 import { getUserAddresses, addUserAddress, deleteUserAddress, saveUserProfile, getAccount, saveAccount, addKnownUser, listAccounts, resetAllVerifications, bindEmailToId, getIdByEmail, saveOtp, getOtp, delOtp, otpRateLimited, markOtpSent, saveAccountImage, getAccountImage, resetAllCredits, nextMemberCode, backfillMemberCodes } from '../lib/redis.js';
 import { sendSMS, normalizePhone, makeOtp, requestOtp, verifyOtp } from '../lib/tbs.js';
+import { ocrThaiIdFront, validThaiId as validThaiIdChecksum } from '../lib/iapp.js';
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto';
 
 /* Password hashing — Node built-in scrypt (ไม่ต้องพึ่ง lib ภายนอก) */
@@ -162,14 +163,27 @@ export default async function handler(req, res) {
       // เช็คอีเมลซ้ำ
       const existingByEmail = await getIdByEmail(email);
       if (existingByEmail) return res.status(409).json({ ok: false, error: 'อีเมลนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ' });
-      // สร้าง internal id (hex 16 ตัว) — แอดมินตรวจเลขจริงจากรูปบัตรเอง
+      /* OCR รูปบัตร → ต้องเจอเลข 13 หลัก + checksum ผ่าน ไม่งั้นบล็อคการสมัคร */
+      let ocrResult;
+      try {
+        ocrResult = await ocrThaiIdFront(idImage);
+      } catch (err) {
+        return res.status(502).json({ ok: false, error: 'ไม่สามารถตรวจสอบบัตรได้ในขณะนี้ กรุณาลองใหม่' });
+      }
+      if (!ocrResult.idNumber || ocrResult.idNumber.length !== 13) {
+        return res.status(400).json({ ok: false, error: 'ไม่พบเลขบัตร 13 หลักในรูป — กรุณาถ่ายใหม่ให้ชัดเจน อย่าให้เลขบัตรถูกบัง' });
+      }
+      if (!ocrResult.valid) {
+        return res.status(400).json({ ok: false, error: 'เลขบัตรที่อ่านได้ไม่ถูกต้อง — กรุณาถ่ายใหม่หรือใช้บัตรจริง' });
+      }
+      // สร้าง internal id (hex 16 ตัว)
       const internalId = randomBytes(8).toString('hex').toUpperCase();
       // รหัสสมาชิกอ่านง่าย (OP-XXXX) — แสดงในโปรไฟล์ + admin
       const memberCode = await nextMemberCode();
       const now = new Date().toISOString();
       const acct = {
-        name: '', phone, email,
-        idNumber: '',           // แอดมินอ่านจากรูปภาพเอง
+        name: ocrResult.thName || '', phone, email,
+        idNumber: ocrResult.idNumber,
         idType: 'thai',
         hasIdImage: true,
         internalId,
