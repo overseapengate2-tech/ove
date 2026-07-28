@@ -1050,10 +1050,12 @@ body{font-variant-numeric:tabular-nums}
   </div>
   <nav>
     <a href="#top"><span class="ic">🏠</span> หน้าหลัก</a>
+    <a href="/calc.html"><span class="ic">🧮</span> คำนวณค่าส่ง</a>
     <a href="/topup.html"><span class="ic">💳</span> การเงิน (เติมเงิน)</a>
     <a href="/orders.html"><span class="ic">📄</span> รายการสั่งซื้อสินค้าจีน</a>
     <a href="/bills.html"><span class="ic">🧾</span> รายการบิลค่าขนส่ง</a>
     <a href="/track-list.html"><span class="ic">🚚</span> ติดตามสถานะสินค้า</a>
+    <a href="/reviews.html"><span class="ic">⭐</span> รีวิว</a>
     <a href="#contact"><span class="ic">📞</span> ติดต่อเรา</a>
   </nav>
 </aside>
@@ -1175,20 +1177,7 @@ body{font-variant-numeric:tabular-nums}
       <span class="nm" id="userName"></span>
       <button class="btn btn-ghost btn-sm" id="logoutBtn" type="button">ออก</button>
     </div>
-    <button class="hamb" id="hamb" type="button" aria-label="เมนู"><span></span><span></span><span></span></button>
   </div>
-  <nav class="mobile-menu" id="mobileMenu">
-    <a href="#top">หน้าแรก</a>
-    <a href="#how">วิธีสั่งซื้อ</a>
-    <a href="/calc.html">คำนวณค่าส่ง</a>
-    <a href="#order">สั่งซื้อ</a>
-    <a href="/track.html">ตรวจสอบสถานะออเดอร์</a>
-    <a href="/orders.html">รายการสั่งซื้อสินค้าจีน</a>
-    <a href="#addresses">📍 ที่อยู่ของฉัน</a>
-    <a href="/reviews.html">⭐ รีวิว</a>
-    <a href="#contact">ติดต่อเรา</a>
-    <a href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener" style="color:var(--line-green);font-weight:700">เพิ่มเพื่อน LINE @overseapengate</a>
-  </nav>
 </header>
 
 <!-- ════════ หน้า "ที่อยู่ของฉัน" (overlay เปิดด้วย #addresses) ════════ -->
@@ -2713,16 +2702,7 @@ document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLoginModal
 /* ============================================================
    HAMBURGER
    ============================================================ */
-$('#hamb').addEventListener('click', ()=>{
-  if(!currentUser || !currentUser.email){
-    flashAlert && flashAlert('🔒 กรุณาเข้าสู่ระบบก่อนใช้งานเมนู');
-    $('#mobileMenu').classList.remove('open');
-    openLoginModal();
-    return;
-  }
-  $('#mobileMenu').classList.toggle('open');
-});
-$$('#mobileMenu a').forEach(a=> a.addEventListener('click', ()=> $('#mobileMenu').classList.remove('open')));
+/* white hamburger removed — sidebar (#opgSb) is the only nav drawer now */
 
 /* ============================================================
    TRACK ORDER
