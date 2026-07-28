@@ -52,8 +52,11 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
     <div class="sec-t"> ที่อยู่โกดังจีนสำหรับส่งสินค้า</div>
     <div class="addr-box">
       <div class="lbl">ผู้รับ / ที่อยู่จัดส่ง</div>
-      <div class="a">收件人: 李裕<br>手机号码: 13970527527<br>所在地区: 广东省广州市<br>白云区均禾街道<br>详细地址: 均禾街石马村桃红二街3号洋驼帮仓库6号仓 88188<br>备注: OVERSEA</div>
+      <div class="a">收件人: 李裕<br>手机号码: 13970527527<br>所在地区: 广东省广州市<br>白云区均禾街道<br>详细地址: 均禾街石马村桃红二街3号洋驼帮仓库6号仓 88188<br>备注: <span id="chNote">OVERSEA</span></div>
       <div class="tel">&#9742; 13970527527</div>
+      <div id="chCodeHint" style="display:none;margin-top:8px;padding:8px 10px;border-radius:8px;background:#FFF7E0;border:1px solid #F0D48A;font-size:12.5px;color:#7C6739;line-height:1.45">
+        💡 กรุณา<b>เข้าสู่ระบบ</b> เพื่อให้ระบบเติมรหัสสมาชิก (OP-XXXX) ในช่องหมายเหตุ — โกดังจะใช้รหัสนี้จับคู่สินค้ากับบัญชีคุณ
+      </div>
       <button class="copy" id="copyBtn">📋 คัดลอกที่อยู่</button>
     </div>
   </div>
@@ -154,8 +157,18 @@ document.getElementById('impForm').addEventListener('submit',async function(e){
   }catch(err){ alert('❌ '+err.message); }
   finally{ btn.disabled=false; btn.textContent='📤 แจ้งส่งของเข้าโกดัง'; }
 });
+/* เติมรหัสสมาชิกลงในหมายเหตุ (备注) — โกดังจะใช้จับคู่สินค้ากับบัญชี */
+(function fillMemberNote(){
+  var noteEl=document.getElementById('chNote'); if(!noteEl) return;
+  var code=(me&&me.memberCode)?String(me.memberCode):'';
+  if(code){ noteEl.textContent='OVERSEA '+code; }
+  else { var hint=document.getElementById('chCodeHint'); if(hint) hint.style.display='block'; }
+})();
+
 document.getElementById('copyBtn').addEventListener('click',function(){
-  var t='Oversea PenGate\n112/41 Lanna Home\nChiang Mai, Thailand\nโทร 095-760-6258';
+  var code=(me&&me.memberCode)?String(me.memberCode):'';
+  var noteLine='备注: '+(code?('OVERSEA '+code):'OVERSEA');
+  var t='收件人: 李裕\n手机号码: 13970527527\n所在地区: 广东省广州市 白云区均禾街道\n详细地址: 均禾街石马村桃红二街3号洋驼帮仓库6号仓 88188\n'+noteLine;
   navigator.clipboard.writeText(t).then(function(){ var b=document.getElementById('copyBtn'); b.textContent='✅ คัดลอกแล้ว'; setTimeout(function(){b.textContent='📋 คัดลอกที่อยู่';},2000); });
 });
 </script>
