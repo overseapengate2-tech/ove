@@ -231,13 +231,24 @@ export default async function handler(req, res) {
 
     /* ── เข้าสู่ระบบด้วยอีเมล + รหัสผ่าน ── */
     if (req.body && req.body.login) {
-      const email = String(req.body.login.email || '').trim().toLowerCase();
+      const rawId = String(req.body.login.email || req.body.login.identifier || '').trim();
       const password = String(req.body.login.password || '');
-      if (!email || !password) return res.status(400).json({ ok: false, error: 'กรุณากรอกอีเมลและรหัสผ่าน' });
-      const idNumber = await getIdByEmail(email);
-      if (!idNumber) return res.status(401).json({ ok: false, error: 'ไม่พบบัญชีนี้ — กรุณาสมัครสมาชิก' });
-      const acct = await getAccount(idNumber);
-      if (!acct || !acct.passwordHash) return res.status(401).json({ ok: false, error: 'บัญชีนี้ยังไม่ได้ตั้งรหัสผ่าน' });
+      if (!rawId || !password) return res.status(400).json({ ok: false, error: 'กรุณากรอกอีเมล/เบอร์โทร และรหัสผ่าน' });
+      let acct = null;
+      const digits = rawId.replace(/\D/g, '');
+      const looksLikePhone = digits.length >= 9 && !rawId.includes('@');
+      if (looksLikePhone) {
+        // เข้าสู่ระบบด้วยเบอร์โทร — สแกน accounts:all หาเบอร์ที่ตัดอักขระพิเศษแล้วตรง
+        const target = normalizePhone(digits);
+        const all = await listAccounts();
+        acct = all.find(a => normalizePhone(String(a.phone || '')) === target) || null;
+      } else {
+        const email = rawId.toLowerCase();
+        const idNumber = await getIdByEmail(email);
+        if (idNumber) acct = await getAccount(idNumber);
+      }
+      if (!acct) return res.status(401).json({ ok: false, error: 'ไม่พบบัญชีนี้ — กรุณาสมัครสมาชิก' });
+      if (!acct.passwordHash) return res.status(401).json({ ok: false, error: 'บัญชีนี้ยังไม่ได้ตั้งรหัสผ่าน' });
       if (!verifyPassword(password, acct.passwordHash)) return res.status(401).json({ ok: false, error: 'รหัสผ่านไม่ถูกต้อง' });
       return res.status(200).json({ ok: true, user: safeAccount(acct) });
     }
