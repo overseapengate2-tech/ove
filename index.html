@@ -29,10 +29,11 @@
     --radius-sm:12px;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;overflow-x:hidden}
   body{
     margin:0;font-family:'IBM Plex Sans Thai',system-ui,-apple-system,'Segoe UI',sans-serif;
     color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;max-width:100vw;
   }
 
   /* ══ GLOBAL GRAIN TEXTURE ══ */
@@ -129,6 +130,11 @@
     padding:6px 10px 6px 14px;border-radius:999px;box-shadow:var(--shadow-sm)}
   #userChip img{width:30px;height:30px;border-radius:50%}
   #userChip .nm{font-size:13px;font-weight:600;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media (max-width:860px){
+    #userChip{padding:4px 8px 4px 10px;gap:6px}
+    #userChip img{width:26px;height:26px}
+    #userChip .nm{max-width:80px;font-size:12px}
+  }
 
   .hero{padding:64px 0 52px;position:relative;overflow:hidden;min-height:520px}
   .hero::before{content:"";position:absolute;inset:-30% -10% auto auto;width:520px;height:520px;
@@ -1093,7 +1099,6 @@ body{font-variant-numeric:tabular-nums}
 
     <!-- REGISTER FORM -->
     <div id="registerFormBox" style="display:none">
-      <input id="rgName" type="text" placeholder="ชื่อ-นามสกุล" autocomplete="name" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <div style="width:100%;max-width:340px;margin:6px auto;display:flex;gap:6px">
         <input id="rgPhone" type="tel" inputmode="tel" placeholder="เบอร์โทรศัพท์ (เช่น 0812345678)" autocomplete="tel" style="flex:1;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px" />
         <button class="btn btn-primary btn-sm" id="rgSendOtp" type="button" style="white-space:nowrap;padding:0 14px">📱 ส่ง OTP</button>
@@ -1869,14 +1874,12 @@ function rgFileToResizedDataURL(file, maxW = 1000, quality = 0.75){
 }
 
 async function doRegister(){
-  const name = $('#rgName').value.trim();
   const phone = $('#rgPhone').value.trim();
   const email = $('#rgEmail').value.trim().toLowerCase();
   const password = $('#rgPassword').value;
   const confirmPassword = $('#rgConfirm').value;
   const otpCode = $('#rgOtpCode') ? $('#rgOtpCode').value.trim() : '';
   const help = $('#rgHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
-  if(!name){ help.textContent = 'กรุณากรอกชื่อ-นามสกุล'; return; }
   if(!phone){ help.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; return; }
   if(!/^\S+@\S+\.\S+$/.test(email)){ help.textContent = 'รูปแบบอีเมลไม่ถูกต้อง'; return; }
   if(!rgIdImageData){ help.textContent = 'กรุณาแนบรูปถ่ายบัตรประชาชน'; return; }
@@ -1885,7 +1888,7 @@ async function doRegister(){
   if(!/^\d{6}$/.test(otpCode)){ help.textContent = 'กรุณากด "ส่ง OTP" แล้วกรอกรหัส 6 หลักที่ได้รับ'; return; }
   const btn = $('#rgSubmit'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังสมัคร…';
   try{
-    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ register:{ name, phone, email, password, confirmPassword, idImage: rgIdImageData, otpCode } }) });
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ register:{ phone, email, password, confirmPassword, idImage: rgIdImageData, otpCode } }) });
     const j = await r.json();
     if(!j.ok) throw new Error(apiErrText(j.error, 'สมัครสมาชิกไม่สำเร็จ'));
     const user = j.user;
