@@ -495,6 +495,28 @@
       'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง': 'Team notifies customer for pickup/delivery',
       'ชำระค่านำเข้าสินค้า': 'Pay import fee',
       'ส่งสินค้ามาตามที่อยู่โกดังจีน': 'Ship goods to our China warehouse address',
+
+      /* ─── follow-up: order-form fields + LINE contact ─── */
+      'ลิงก์สินค้า Taobao / 1688 / Tmall…': 'Product link Taobao / 1688 / Tmall…',
+      'รูปสินค้า (อัปโหลดจากเครื่อง)': 'Product photo (upload from device)',
+      'อธิบายสิ่งที่อยากได้ (สี / ไซต์ / รุ่น / จำนวน / รายละเอียด)': 'Describe what you want (color / size / model / qty / details)',
+      'เช่น เอาสีดำ ไซต์ XL 2 ชิ้น / รบกวนเช็คของแท้': 'e.g. black, size XL, 2 pcs / please verify authenticity',
+      'กรอกรหัส OTP 6 หลัก': 'Enter 6-digit OTP',
+      'เช่น @yourline': 'e.g. @yourline',
+      'เลขที่ / อาคาร / หมู่ / ซอย / ถนน': 'No. / Building / Village / Alley / Road',
+      'ไอดี LINE ของคุณ': 'Your LINE ID',
+      'เพื่อให้ทีมงานติดต่อกลับแจ้งราคา': 'So our team can reply with a price',
+      'เช็คราคา': 'Check price',
+      'เช็คราคา ฟรี!': 'Check price — free!',
+      '✅ ฟรีเช็คราคา': '✅ Free quote',
+      'บันทึกออเดอร์ของคุณแล้ว ทีมงานจะเปิดลิงก์เช็คราคา + ค่าส่ง แล้วแจ้งราคารวมกลับให้ทาง LINE':
+        'Your order is saved. The team will check the link + shipping and quote you via LINE.',
+
+      /* sidebar rail (vertical labels on side buttons) */
+      'ส่งดี': 'Delivery',
+      'ตอบไว': 'Fast reply',
+      'ครบ': 'Complete',
+      'ฟรี!': 'Free!',
     },
 
     zh: {
@@ -962,6 +984,28 @@
       'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง': '团队通知客户取货/派送',
       'ชำระค่านำเข้าสินค้า': '支付进口费用',
       'ส่งสินค้ามาตามที่อยู่โกดังจีน': '寄送到中国仓库地址',
+
+      /* ─── follow-up: order-form fields + LINE contact ─── */
+      'ลิงก์สินค้า Taobao / 1688 / Tmall…': '商品链接 淘宝 / 1688 / 天猫…',
+      'รูปสินค้า (อัปโหลดจากเครื่อง)': '商品图片 (从设备上传)',
+      'อธิบายสิ่งที่อยากได้ (สี / ไซต์ / รุ่น / จำนวน / รายละเอียด)': '描述需求 (颜色 / 尺码 / 型号 / 数量 / 详情)',
+      'เช่น เอาสีดำ ไซต์ XL 2 ชิ้น / รบกวนเช็คของแท้': '例如: 黑色, XL 码, 2 件 / 请核实真伪',
+      'กรอกรหัส OTP 6 หลัก': '输入 6 位验证码',
+      'เช่น @yourline': '例如 @yourline',
+      'เลขที่ / อาคาร / หมู่ / ซอย / ถนน': '门牌号 / 建筑 / 村 / 巷 / 街道',
+      'ไอดี LINE ของคุณ': '您的 LINE ID',
+      'เพื่อให้ทีมงานติดต่อกลับแจ้งราคา': '以便团队回复报价',
+      'เช็คราคา': '查询价格',
+      'เช็คราคา ฟรี!': '免费查价!',
+      '✅ ฟรีเช็คราคา': '✅ 免费报价',
+      'บันทึกออเดอร์ของคุณแล้ว ทีมงานจะเปิดลิงก์เช็คราคา + ค่าส่ง แล้วแจ้งราคารวมกลับให้ทาง LINE':
+        '您的订单已保存,团队将查看链接与运费后通过 LINE 报价。',
+
+      /* sidebar rail (vertical labels on side buttons) */
+      'ส่งดี': '配送',
+      'ตอบไว': '快速回复',
+      'ครบ': '齐全',
+      'ฟรี!': '免费!',
     },
   };
 
