@@ -1952,6 +1952,7 @@ async function runOcrCheck(image){
     document.getElementById('verifyIdMasked').textContent = 'เลขบัตร: ' + (j.idNumberMasked || '');
     okBox.style.display='block';
     continueBtn.style.display='inline-block';
+    retryBtn.style.display='inline-block';   /* success ก็ให้ถ่ายใหม่ได้ ถ้าลูกค้าอยากเปลี่ยนรูป */
     status.textContent = 'ตรวจสอบเสร็จ — กดปุ่มเพื่อไปกรอกข้อมูลต่อ';
   }catch(err){
     spin.style.display='none';
