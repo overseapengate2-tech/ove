@@ -1102,7 +1102,28 @@ body{font-variant-numeric:tabular-nums}
       <input id="liPassword" type="password" placeholder="รหัสผ่าน" autocomplete="current-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <div class="modal-help" id="liHelp" style="min-height:20px;margin-top:6px"></div>
       <button class="btn btn-primary" id="liSubmit" type="button" style="min-width:220px;margin-top:6px">🔑 เข้าสู่ระบบ</button>
+      <div style="margin-top:10px;font-size:13px"><a href="#" id="goForgot" style="color:var(--brand-600,#7C6739);text-decoration:underline">ลืมรหัสผ่าน?</a></div>
       <div style="margin-top:14px;font-size:13.5px;color:var(--ink-soft,#7C715B)">ยังไม่มีบัญชี? <a href="#" id="goRegister" style="color:var(--brand-600,#7C6739);font-weight:700;text-decoration:underline">สมัครสมาชิก</a></div>
+    </div>
+
+    <!-- FORGOT PASSWORD FORM -->
+    <div id="forgotFormBox" style="display:none">
+      <div style="text-align:center;font-size:14px;color:var(--ink-soft,#7C715B);margin-bottom:10px">กรอกเบอร์โทรที่ผูกกับบัญชี ระบบจะส่ง OTP ให้</div>
+      <div style="width:100%;max-width:340px;margin:6px auto;display:flex;gap:6px">
+        <input id="fpPhone" type="tel" inputmode="tel" placeholder="เบอร์โทรศัพท์ (เช่น 0812345678)" autocomplete="tel" style="flex:1;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px" />
+        <button class="btn btn-primary btn-sm" id="fpSendOtp" type="button" style="white-space:nowrap;padding:0 14px">📱 ส่ง OTP</button>
+      </div>
+      <div id="fpOtpBox" style="display:none;width:100%;max-width:340px;margin:6px auto">
+        <input id="fpOtpCode" type="text" inputmode="numeric" maxlength="6" placeholder="กรอกรหัส OTP 6 หลัก" autocomplete="one-time-code" style="width:100%;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;letter-spacing:6px;text-align:center" />
+        <div style="font-size:12px;color:var(--ink-soft,#7C715B);margin-top:4px;text-align:center">
+          <span id="fpOtpStatus">รหัสส่งไปที่ SMS แล้ว</span> · <a href="#" id="fpResendOtp" style="color:var(--brand-600,#7C6739)">ส่งอีกครั้ง</a>
+        </div>
+      </div>
+      <input id="fpNewPassword" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
+      <input id="fpConfirm" type="password" placeholder="ยืนยันรหัสผ่านใหม่" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
+      <div class="modal-help" id="fpHelp" style="min-height:20px;margin-top:6px"></div>
+      <button class="btn btn-primary" id="fpSubmit" type="button" style="min-width:220px;margin-top:6px">🔓 รีเซ็ตรหัสผ่าน</button>
+      <div style="margin-top:14px;font-size:13.5px;color:var(--ink-soft,#7C715B)"><a href="#" id="goLoginFromForgot" style="color:var(--brand-600,#7C6739);font-weight:700;text-decoration:underline">← กลับหน้าเข้าสู่ระบบ</a></div>
     </div>
 
     <!-- REGISTER FORM -->
@@ -1827,13 +1848,19 @@ function updateAuthState(){
    EMAIL / PASSWORD AUTH
    ============================================================ */
 function switchAuthView(mode){
-  $('#loginModalTitle').textContent = mode === 'register' ? 'สมัครสมาชิก' : 'เข้าสู่ระบบ';
-  $('#loginModalSub').textContent = mode === 'register'
-    ? 'กรอกข้อมูลเพื่อสมัครสมาชิกใหม่'
-    : 'กรอกอีเมลและรหัสผ่านเพื่อเข้าสู่ระบบ';
-  $('#loginFormBox').style.display = mode === 'register' ? 'none' : 'block';
+  const titles = { register:'สมัครสมาชิก', forgot:'ลืมรหัสผ่าน', login:'เข้าสู่ระบบ' };
+  const subs = {
+    register:'กรอกข้อมูลเพื่อสมัครสมาชิกใหม่',
+    forgot:'ตั้งรหัสผ่านใหม่ด้วยการยืนยัน OTP',
+    login:'กรอกอีเมล/เบอร์โทร และรหัสผ่านเพื่อเข้าสู่ระบบ'
+  };
+  $('#loginModalTitle').textContent = titles[mode] || titles.login;
+  $('#loginModalSub').textContent = subs[mode] || subs.login;
+  $('#loginFormBox').style.display = mode === 'login' ? 'block' : 'none';
   $('#registerFormBox').style.display = mode === 'register' ? 'block' : 'none';
-  $('#liHelp').textContent = ''; $('#rgHelp').textContent = '';
+  $('#forgotFormBox').style.display = mode === 'forgot' ? 'block' : 'none';
+  const setEmpty = id => { const el = $('#'+id); if (el) el.textContent = ''; };
+  setEmpty('liHelp'); setEmpty('rgHelp'); setEmpty('fpHelp');
 }
 
 async function doEmailLogin(){
@@ -1850,6 +1877,46 @@ async function doEmailLogin(){
     localStorage.setItem('opg_user', JSON.stringify(user));
     setLoggedIn(user);
   }catch(err){ help.textContent = err.message || 'เข้าสู่ระบบไม่สำเร็จ'; }
+  btn.disabled = false; btn.textContent = oldText;
+}
+
+/* ── ลืมรหัสผ่าน — ส่ง OTP + รีเซ็ต ─────────────────────────── */
+async function doForgotSendOtp(isResend){
+  const phone = $('#fpPhone').value.trim();
+  const help = $('#fpHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
+  if(!/^\d{9,10}$/.test(phone.replace(/\D/g,''))){ help.textContent = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (9-10 หลัก)'; return; }
+  const btn = $('#fpSendOtp'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังส่ง…';
+  try{
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ passwordResetSend:{ phone } }) });
+    const j = await r.json();
+    if(!j.ok) throw new Error(apiErrText(j.error, 'ส่ง OTP ไม่สำเร็จ'));
+    $('#fpOtpBox').style.display = 'block';
+    $('#fpOtpStatus').textContent = 'รหัสส่งไปที่ SMS แล้ว (หมดอายุใน 5 นาที)';
+    help.style.color = 'var(--ok,#1a7f37)';
+    help.textContent = isResend ? '✅ ส่งรหัสใหม่แล้ว' : '✅ ส่ง OTP ไปที่ ' + phone;
+  }catch(err){ help.textContent = err.message || 'ส่ง OTP ไม่สำเร็จ'; }
+  btn.disabled = false; btn.textContent = oldText;
+}
+
+async function doPasswordReset(){
+  const phone = $('#fpPhone').value.trim();
+  const otpCode = $('#fpOtpCode').value.trim();
+  const newPassword = $('#fpNewPassword').value;
+  const confirmPassword = $('#fpConfirm').value;
+  const help = $('#fpHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
+  if(!phone){ help.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; return; }
+  if(!/^\d{6}$/.test(otpCode)){ help.textContent = 'กรุณากด "ส่ง OTP" แล้วกรอกรหัส 6 หลักที่ได้รับ'; return; }
+  if(newPassword.length < 6){ help.textContent = 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
+  if(newPassword !== confirmPassword){ help.textContent = 'รหัสผ่านไม่ตรงกัน'; return; }
+  const btn = $('#fpSubmit'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังรีเซ็ต…';
+  try{
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ passwordReset:{ phone, otpCode, newPassword, confirmPassword } }) });
+    const j = await r.json();
+    if(!j.ok) throw new Error(apiErrText(j.error, 'รีเซ็ตรหัสผ่านไม่สำเร็จ'));
+    help.style.color = 'var(--ok,#1a7f37)';
+    help.textContent = '✅ รีเซ็ตรหัสผ่านสำเร็จ — กำลังพากลับไปเข้าสู่ระบบ…';
+    setTimeout(()=>{ switchAuthView('login'); $('#liEmail').value = phone; $('#liPassword').value = newPassword; }, 1500);
+  }catch(err){ help.textContent = err.message || 'รีเซ็ตรหัสผ่านไม่สำเร็จ'; }
   btn.disabled = false; btn.textContent = oldText;
 }
 
@@ -2707,6 +2774,13 @@ $('#loginSkip').addEventListener('click', closeLoginModal);
 $('#loginModal').addEventListener('click', (e)=>{ if(e.target.id==='loginModal') closeLoginModal(); });
 $('#goRegister')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('register'); });
 $('#goLogin')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('login'); });
+$('#goForgot')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('forgot'); });
+$('#goLoginFromForgot')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('login'); });
+$('#fpSendOtp')?.addEventListener('click', ()=> doForgotSendOtp(false));
+$('#fpResendOtp')?.addEventListener('click', (e)=>{ e.preventDefault(); doForgotSendOtp(true); });
+$('#fpSubmit')?.addEventListener('click', doPasswordReset);
+$('#fpNewPassword')?.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doPasswordReset(); });
+$('#fpConfirm')?.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doPasswordReset(); });
 $('#liSubmit')?.addEventListener('click', doEmailLogin);
 $('#rgSubmit')?.addEventListener('click', doRegister);
 $('#rgSendOtp')?.addEventListener('click', ()=> doSendOtp(false));
