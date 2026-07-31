@@ -1119,6 +1119,15 @@ body{font-variant-numeric:tabular-nums}
           <span id="fpOtpStatus">รหัสส่งไปที่ SMS แล้ว</span> · <a href="#" id="fpResendOtp" style="color:var(--brand-600,#7C6739)">ส่งอีกครั้ง</a>
         </div>
       </div>
+      <div id="fpIdImageLabel" style="display:block;width:100%;max-width:340px;margin:6px auto;padding:10px 14px;border:1.5px dashed var(--brand,#9C8654);border-radius:10px;font-size:13.5px;color:var(--brand-600,#7C6739);background:var(--brand-50,#F6F0E1);text-align:center">
+        <div style="margin-bottom:8px">🪪 ยืนยันตัวตนด้วยบัตรประชาชน<br><span style="font-size:11.5px;font-weight:400">(ต้องเป็นบัตรใบเดียวกับตอนสมัคร)</span></div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <label for="fpIdCam" style="flex:1;min-width:120px;padding:9px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">📷 ถ่ายรูป</label>
+          <label for="fpIdFile" style="flex:1;min-width:120px;padding:9px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">🖼️ เลือกจากคลัง</label>
+        </div>
+      </div>
+      <input id="fpIdCam" type="file" accept="image/*" capture="environment" style="display:none" />
+      <input id="fpIdFile" type="file" accept="image/*" style="display:none" />
       <input id="fpNewPassword" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <input id="fpConfirm" type="password" placeholder="ยืนยันรหัสผ่านใหม่" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <div class="modal-help" id="fpHelp" style="min-height:20px;margin-top:6px"></div>
@@ -1906,11 +1915,12 @@ async function doPasswordReset(){
   const help = $('#fpHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
   if(!phone){ help.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; return; }
   if(!/^\d{6}$/.test(otpCode)){ help.textContent = 'กรุณากด "ส่ง OTP" แล้วกรอกรหัส 6 หลักที่ได้รับ'; return; }
+  if(!fpOcrToken){ help.textContent = 'กรุณาแนบรูปบัตรประชาชนและให้ระบบยืนยันบัตรก่อน'; return; }
   if(newPassword.length < 6){ help.textContent = 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
   if(newPassword !== confirmPassword){ help.textContent = 'รหัสผ่านไม่ตรงกัน'; return; }
   const btn = $('#fpSubmit'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังรีเซ็ต…';
   try{
-    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ passwordReset:{ phone, otpCode, newPassword, confirmPassword } }) });
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ passwordReset:{ phone, otpCode, newPassword, confirmPassword, ocrToken: fpOcrToken } }) });
     const j = await r.json();
     if(!j.ok) throw new Error(apiErrText(j.error, 'รีเซ็ตรหัสผ่านไม่สำเร็จ'));
     help.style.color = 'var(--ok,#1a7f37)';
@@ -1962,6 +1972,8 @@ function rgFileToResizedDataURL(file, maxW = 1000, quality = 0.75){
 }
 
 let rgOcrToken = '';
+let fpOcrToken = '';
+let authFlow = 'register';  // 'register' | 'forgot' — which panel to return to after verify screen
 
 async function doRegister(){
   const phone = $('#rgPhone').value.trim();
@@ -1992,11 +2004,16 @@ async function doRegister(){
 
 function showVerifyScreen(){
   document.getElementById('registerFormBox').style.display = 'none';
+  document.getElementById('forgotFormBox').style.display = 'none';
   document.getElementById('verifyBox').style.display = 'block';
 }
 function showRegisterScreen(){
   document.getElementById('verifyBox').style.display = 'none';
-  document.getElementById('registerFormBox').style.display = 'block';
+  if(authFlow === 'forgot'){
+    document.getElementById('forgotFormBox').style.display = 'block';
+  } else {
+    document.getElementById('registerFormBox').style.display = 'block';
+  }
 }
 
 async function runOcrCheck(image){
@@ -2014,7 +2031,8 @@ async function runOcrCheck(image){
     const j = await r.json();
     spin.style.display='none';
     if(!j.ok) throw new Error(apiErrText(j.error, 'ตรวจสอบบัตรไม่สำเร็จ'));
-    rgOcrToken = j.ocrToken || '';
+    if(authFlow === 'forgot') fpOcrToken = j.ocrToken || '';
+    else rgOcrToken = j.ocrToken || '';
     document.getElementById('verifyName').textContent = j.thName ? ('ชื่อ: ' + j.thName) : '';
     document.getElementById('verifyIdMasked').textContent = 'เลขบัตร: ' + (j.idNumberMasked || '');
     okBox.style.display='block';
@@ -2023,7 +2041,8 @@ async function runOcrCheck(image){
     status.textContent = 'ตรวจสอบเสร็จ — กดปุ่มเพื่อไปกรอกข้อมูลต่อ';
   }catch(err){
     spin.style.display='none';
-    rgOcrToken = '';
+    if(authFlow === 'forgot') fpOcrToken = '';
+    else rgOcrToken = '';
     document.getElementById('verifyErrorText').textContent = err.message || 'ตรวจสอบไม่สำเร็จ';
     errBox.style.display='block';
     retryBtn.style.display='inline-block';
@@ -2033,31 +2052,40 @@ async function runOcrCheck(image){
 
 // รับไฟล์รูปบัตร (มี 2 ปุ่ม: ถ่ายรูป / เลือกจากคลัง) → ย่อ → ไปหน้าตรวจสอบ → OCR
 document.addEventListener('DOMContentLoaded', ()=>{
-  const handleFile = async (e)=>{
+  const makeHandler = (flow, helpId) => async (e)=>{
     const f = e.target.files && e.target.files[0]; if(!f) return;
-    const help = document.getElementById('rgHelp'); help.textContent = '';
+    authFlow = flow;
+    const help = document.getElementById(helpId); if(help) help.textContent = '';
     try{
       rgIdImageData = await rgFileToResizedDataURL(f);
       document.getElementById('verifyPreview').src = rgIdImageData;
       showVerifyScreen();
       await runOcrCheck(rgIdImageData);
     }catch(err){
-      rgIdImageData = ''; rgOcrToken = '';
-      help.textContent = err.message || 'อ่านไฟล์รูปไม่สำเร็จ กรุณาลองใหม่';
-      help.style.color = 'var(--err,#b3392f)';
+      rgIdImageData = '';
+      if(flow === 'forgot') fpOcrToken = ''; else rgOcrToken = '';
+      if(help){ help.textContent = err.message || 'อ่านไฟล์รูปไม่สำเร็จ กรุณาลองใหม่'; help.style.color = 'var(--err,#b3392f)'; }
     }
   };
+  const regHandler = makeHandler('register','rgHelp');
+  const fpHandler  = makeHandler('forgot','fpHelp');
   ['rgIdImageInput','rgIdImageCam','rgIdImageFile'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('change', handleFile);
+    const el = document.getElementById(id); if(el) el.addEventListener('change', regHandler);
+  });
+  ['fpIdCam','fpIdFile'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.addEventListener('change', fpHandler);
   });
   document.getElementById('verifyContinueBtn').addEventListener('click', ()=>{
-    document.getElementById('rgIdImageLabel').innerHTML = '<div style="padding:8px 0;color:var(--ok,#1a7f37);font-weight:700">✅ ตรวจสอบบัตรผ่านแล้ว — กดปุ่มด้านล่างเพื่อเปลี่ยนรูป</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><label for="rgIdImageCam" style="flex:1;min-width:120px;padding:8px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">📷 ถ่ายรูป</label><label for="rgIdImageFile" style="flex:1;min-width:120px;padding:8px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">🖼️ เลือกจากคลัง</label></div>';
+    const labelId = authFlow === 'forgot' ? 'fpIdImageLabel' : 'rgIdImageLabel';
+    const camId   = authFlow === 'forgot' ? 'fpIdCam' : 'rgIdImageCam';
+    const fileId  = authFlow === 'forgot' ? 'fpIdFile' : 'rgIdImageFile';
+    document.getElementById(labelId).innerHTML = '<div style="padding:8px 0;color:var(--ok,#1a7f37);font-weight:700">✅ ตรวจสอบบัตรผ่านแล้ว — กดปุ่มด้านล่างเพื่อเปลี่ยนรูป</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><label for="'+camId+'" style="flex:1;min-width:120px;padding:8px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">📷 ถ่ายรูป</label><label for="'+fileId+'" style="flex:1;min-width:120px;padding:8px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">🖼️ เลือกจากคลัง</label></div>';
     showRegisterScreen();
   });
   document.getElementById('verifyRetryBtn').addEventListener('click', ()=>{
-    rgIdImageData = ''; rgOcrToken = '';
-    ['rgIdImageInput','rgIdImageCam','rgIdImageFile'].forEach(id=>{
+    rgIdImageData = '';
+    if(authFlow === 'forgot') fpOcrToken = ''; else rgOcrToken = '';
+    ['rgIdImageInput','rgIdImageCam','rgIdImageFile','fpIdCam','fpIdFile'].forEach(id=>{
       const el = document.getElementById(id); if(el) el.value = '';
     });
     showRegisterScreen();
@@ -2774,8 +2802,8 @@ $('#loginSkip').addEventListener('click', closeLoginModal);
 $('#loginModal').addEventListener('click', (e)=>{ if(e.target.id==='loginModal') closeLoginModal(); });
 $('#goRegister')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('register'); });
 $('#goLogin')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('login'); });
-$('#goForgot')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('forgot'); });
-$('#goLoginFromForgot')?.addEventListener('click', (e)=>{ e.preventDefault(); switchAuthView('login'); });
+$('#goForgot')?.addEventListener('click', (e)=>{ e.preventDefault(); authFlow='forgot'; switchAuthView('forgot'); });
+$('#goLoginFromForgot')?.addEventListener('click', (e)=>{ e.preventDefault(); authFlow='register'; switchAuthView('login'); });
 $('#fpSendOtp')?.addEventListener('click', ()=> doForgotSendOtp(false));
 $('#fpResendOtp')?.addEventListener('click', (e)=>{ e.preventDefault(); doForgotSendOtp(true); });
 $('#fpSubmit')?.addEventListener('click', doPasswordReset);

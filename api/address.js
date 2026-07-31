@@ -164,10 +164,14 @@ export default async function handler(req, res) {
       const otpCode = String(r.otpCode || '').trim();
       const newPassword = String(r.newPassword || '');
       const confirmPassword = String(r.confirmPassword || '');
+      const ocrToken = String(r.ocrToken || '').trim();
       if (!/^66\d{8,10}$/.test(phone)) return res.status(400).json({ ok: false, error: 'รูปแบบเบอร์โทรไม่ถูกต้อง' });
       if (!/^\d{6}$/.test(otpCode)) return res.status(400).json({ ok: false, error: 'รหัส OTP ต้องเป็นตัวเลข 6 หลัก' });
       if (newPassword.length < 6) return res.status(400).json({ ok: false, error: 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร' });
       if (newPassword !== confirmPassword) return res.status(400).json({ ok: false, error: 'รหัสผ่านไม่ตรงกัน' });
+      if (!ocrToken) return res.status(400).json({ ok: false, error: 'กรุณายืนยันตัวตนด้วยบัตรประชาชนก่อน' });
+      const cachedOcr = await getOcrCache(ocrToken);
+      if (!cachedOcr || !cachedOcr.idNumber) return res.status(410).json({ ok: false, error: 'ผลตรวจสอบบัตรหมดอายุ กรุณาถ่ายบัตรใหม่' });
       const token = await getOtp(phone);
       if (!token) return res.status(410).json({ ok: false, error: 'รหัส OTP หมดอายุ กรุณาขอใหม่' });
       try {
@@ -179,9 +183,14 @@ export default async function handler(req, res) {
       const all = await listAccounts();
       const acct = all.find(a => normalizePhone(String(a.phone || '')) === phone);
       if (!acct) return res.status(404).json({ ok: false, error: 'ไม่พบบัญชีที่ใช้เบอร์นี้' });
+      // เช็คว่าบัตรที่อัปโหลดตอนลืมรหัสผ่าน = บัตรใบเดียวกับตอนสมัคร
+      if (!acct.idNumber || String(acct.idNumber) !== String(cachedOcr.idNumber)) {
+        return res.status(403).json({ ok: false, error: 'บัตรประชาชนไม่ตรงกับที่ใช้ตอนสมัคร — ไม่สามารถรีเซ็ตรหัสผ่านได้' });
+      }
       acct.passwordHash = hashPassword(newPassword);
       await saveAccount(acct.internalId, acct);
       try { await delOtp(phone); } catch (e2) {}
+      try { await delOcrCache(ocrToken); } catch (e2) {}
       return res.status(200).json({ ok: true });
     }
 
