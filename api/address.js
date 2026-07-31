@@ -133,6 +133,58 @@ export default async function handler(req, res) {
       }
     }
 
+    /* ── ลืมรหัสผ่าน: ส่ง OTP ไปเบอร์ที่ผูกกับบัญชี ── */
+    if (req.body && req.body.passwordResetSend) {
+      const raw = String(req.body.passwordResetSend.phone || '').trim();
+      const phone = normalizePhone(raw);
+      if (!/^66\d{8,10}$/.test(phone)) return res.status(400).json({ ok: false, error: 'รูปแบบเบอร์โทรไม่ถูกต้อง' });
+      // ต้องเป็นเบอร์ที่มีบัญชีอยู่จริง — สแกน accounts:all
+      const all = await listAccounts();
+      const found = all.find(a => normalizePhone(String(a.phone || '')) === phone);
+      if (!found) return res.status(404).json({ ok: false, error: 'ไม่พบบัญชีที่ใช้เบอร์นี้ — กรุณาสมัครสมาชิกก่อน' });
+      if (await otpRateLimited(phone)) return res.status(429).json({ ok: false, error: 'ขอ OTP บ่อยเกินไป — กรุณารอ 60 วินาที' });
+      let token;
+      try {
+        const r = await requestOtp(phone);
+        token = r.token;
+        if (!token) throw new Error('TBS ไม่คืน token กลับมา');
+      } catch (err) {
+        return res.status(502).json({ ok: false, error: err.message || 'ส่ง OTP ไม่สำเร็จ' });
+      }
+      await saveOtp(phone, token, 300);
+      await markOtpSent(phone, 60);
+      return res.status(200).json({ ok: true, expiresIn: 300 });
+    }
+
+    /* ── ลืมรหัสผ่าน: ยืนยัน OTP + ตั้งรหัสใหม่ ── */
+    if (req.body && req.body.passwordReset) {
+      const r = req.body.passwordReset;
+      const rawPhone = String(r.phone || '').trim();
+      const phone = normalizePhone(rawPhone);
+      const otpCode = String(r.otpCode || '').trim();
+      const newPassword = String(r.newPassword || '');
+      const confirmPassword = String(r.confirmPassword || '');
+      if (!/^66\d{8,10}$/.test(phone)) return res.status(400).json({ ok: false, error: 'รูปแบบเบอร์โทรไม่ถูกต้อง' });
+      if (!/^\d{6}$/.test(otpCode)) return res.status(400).json({ ok: false, error: 'รหัส OTP ต้องเป็นตัวเลข 6 หลัก' });
+      if (newPassword.length < 6) return res.status(400).json({ ok: false, error: 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร' });
+      if (newPassword !== confirmPassword) return res.status(400).json({ ok: false, error: 'รหัสผ่านไม่ตรงกัน' });
+      const token = await getOtp(phone);
+      if (!token) return res.status(410).json({ ok: false, error: 'รหัส OTP หมดอายุ กรุณาขอใหม่' });
+      try {
+        const v = await verifyOtp(token, otpCode);
+        if (!v.valid) return res.status(401).json({ ok: false, error: 'รหัส OTP ไม่ถูกต้อง' });
+      } catch (err) {
+        return res.status(502).json({ ok: false, error: err.message || 'ตรวจสอบ OTP ไม่สำเร็จ' });
+      }
+      const all = await listAccounts();
+      const acct = all.find(a => normalizePhone(String(a.phone || '')) === phone);
+      if (!acct) return res.status(404).json({ ok: false, error: 'ไม่พบบัญชีที่ใช้เบอร์นี้' });
+      acct.passwordHash = hashPassword(newPassword);
+      await saveAccount(acct.internalId, acct);
+      try { await delOtp(phone); } catch (e2) {}
+      return res.status(200).json({ ok: true });
+    }
+
     /* ── ตรวจสอบบัตร ปชช ก่อนสมัคร — เรียกจากหน้าฟอร์มตอนอัปโหลดรูป ── */
     if (req.body && req.body.ocrCheck) {
       const idImage = String(req.body.ocrCheck.image || '');
