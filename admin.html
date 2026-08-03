@@ -618,7 +618,10 @@ body{font-variant-numeric:tabular-nums}
           </div>
           <div class="price-row">
             <div class="field" style="display:none"><label>ชื่อลูกค้า</label><input type="text" id="editCustName" placeholder="ชื่อ-นามสกุล" readonly/></div>
-            <div class="field"><label>LINE ID</label><input type="text" id="editCustLine" placeholder="@line หรือ id" readonly/></div>
+            <div class="field"><label>รหัสสมาชิก</label><input type="text" id="editCustMemberCode" placeholder="—" readonly style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:700;color:#7C6739;background:#F6F0E1"/></div>
+          </div>
+          <div class="price-row">
+            <div class="field" style="grid-column:1/-1"><label>LINE ID</label><input type="text" id="editCustLine" placeholder="@line หรือ id" readonly/></div>
           </div>
           <input type="hidden" id="editCustPhone"/>
           <div class="price-row">
@@ -1457,6 +1460,20 @@ function openEdit(no) {
   $('editCustLine').value   = o.customer?.lineId || '';
   $('editCustPhone').value  = o.customer?.phone  || '';
   $('editCustEmail').value  = o.customer?.email  || '';
+  /* หา memberCode จาก membersCache ผ่านอีเมล (fetch cache lazy ถ้ายังไม่มี) */
+  $('editCustMemberCode').value = '—';
+  (async ()=>{
+    try{
+      if(!membersCache.length){
+        const r = await fetch(`${API_BASE}/api/address?members=1`, { headers:{ 'x-admin-key': adminKey } });
+        const j = await r.json();
+        if(j.ok) membersCache = j.members || [];
+      }
+      const em = String(o.customer?.email || '').toLowerCase();
+      const found = membersCache.find(m => String(m.email||'').toLowerCase() === em);
+      $('editCustMemberCode').value = (found && found.memberCode) || '—';
+    }catch(e){}
+  })();
   $('editCustNote').value   = ((o.note||'').split('·').map(s=>s.trim()).find(s=>s.startsWith('หมายเหตุ:'))||'').replace(/^หมายเหตุ:\s*/,'') || (/(จัดส่ง|ตีลังไม้|QC):/.test(o.note||'')?'':(o.note||''));
   setCustLock(true);
   $('editTrackingNo').value   = o.trackingNo   || '';
