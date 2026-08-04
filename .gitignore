@@ -1,3 +1,10 @@
 .vercel
 .env
 node_modules/
+
+# PWABuilder Android package (contains signing key — never commit!)
+Oversea PenGate - Google Play package*/
+*.keystore
+signing-key-info*.txt
+*.apk
+*.aab
