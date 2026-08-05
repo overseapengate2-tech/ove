@@ -510,6 +510,12 @@
       'ตรวจสอบออเดอร์': 'Track order',
       'สั่งซื้อสินค้า': 'Order products',
 
+      /* ─── topup history table + bank labels ─── */
+      'วันที่แจ้ง': 'Date reported',
+      'จำนวน (฿)': 'Amount (฿)',
+      'สลิป': 'Slip',
+      'กสิกรไทย': 'Kasikorn Bank',
+
       /* ─── warehouse-cn / orders stat cards ─── */
       'แบบร่าง': 'Draft',
       'สั่งซื้อสำเร็จ (สินค้าถึงโกดังจีน)': 'Order complete (arrived at CN warehouse)',
@@ -1345,6 +1351,12 @@
       'บริการนำเข้าสินค้าจากจีน': '中国商品进口服务',
       'ตรวจสอบออเดอร์': '订单查询',
       'สั่งซื้อสินค้า': '订购商品',
+
+      /* ─── topup history table + bank labels ─── */
+      'วันที่แจ้ง': '通知日期',
+      'จำนวน (฿)': '金额 (泰铢)',
+      'สลิป': '凭证',
+      'กสิกรไทย': '开泰银行',
 
       /* ─── warehouse-cn / orders stat cards ─── */
       'แบบร่าง': '草稿',
