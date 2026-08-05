@@ -516,6 +516,22 @@
       'สลิป': 'Slip',
       'กสิกรไทย': 'Kasikorn Bank',
 
+      /* ─── PO detail / shipping timeline ─── */
+      'รอจัดส่ง': 'Waiting to ship',
+      'เข้าโกดังจีน': 'At CN warehouse',
+      'ออกจากจีน': 'Left China',
+      'ถึงไทย/ศุลกากร': 'Arrived TH / Customs',
+      'โกดังไทย': 'TH warehouse',
+      'กำลังนำส่ง': 'Out for delivery',
+      'สถานะการขนส่ง — รอจัดส่ง': 'Shipping status — Waiting to ship',
+      'ได้รับคำสั่งซื้อแล้ว รอทีมงานตรวจสอบราคา': 'Order received. Waiting for team to check price.',
+      'สั่งซื้อกับร้านจีนแล้ว': 'Ordered from CN shop',
+      'เลข Tracking จีน': 'China tracking No.',
+      'วันที่สั่ง': 'Order date',
+      'ดูใบสั่งซื้อ (PO)': 'View PO',
+      'Product price': 'Product price',
+      'Grand total': 'Grand total',
+
       /* ─── warehouse-cn / orders stat cards ─── */
       'แบบร่าง': 'Draft',
       'สั่งซื้อสำเร็จ (สินค้าถึงโกดังจีน)': 'Order complete (arrived at CN warehouse)',
@@ -1359,6 +1375,22 @@
       'จำนวน (฿)': '金额 (泰铢)',
       'สลิป': '凭证',
       'กสิกรไทย': '开泰银行',
+
+      /* ─── PO detail / shipping timeline ─── */
+      'รอจัดส่ง': '待发货',
+      'เข้าโกดังจีน': '入中国仓',
+      'ออกจากจีน': '出中国',
+      'ถึงไทย/ศุลกากร': '到达泰国/清关',
+      'โกดังไทย': '泰国仓',
+      'กำลังนำส่ง': '派送中',
+      'สถานะการขนส่ง — รอจัดส่ง': '运输状态 — 待发货',
+      'ได้รับคำสั่งซื้อแล้ว รอทีมงานตรวจสอบราคา': '订单已收到,等待团队核价',
+      'สั่งซื้อกับร้านจีนแล้ว': '已向中国店铺下单',
+      'เลข Tracking จีน': '中国物流号',
+      'วันที่สั่ง': '下单日期',
+      'ดูใบสั่งซื้อ (PO)': '查看采购单 (PO)',
+      'Product price': '商品价格',
+      'Grand total': '总计',
 
       /* ─── warehouse-cn / orders stat cards ─── */
       'แบบร่าง': '草稿',
