@@ -529,6 +529,8 @@
       /* ─── order form label split by span ─── */
       'อธิบายสิ่งที่อยากได้': 'Describe what you want',
       '(สี / ไซต์ / รุ่น / จำนวน / รายละเอียด)': '(color / size / model / qty / details)',
+      'รูปสินค้า': 'Product photo',
+      '(อัปโหลดจากเครื่อง)': '(upload from device)',
 
       /* ─── follow-up: order-form fields + LINE contact ─── */
       'ลิงก์สินค้า Taobao / 1688 / Tmall…': 'Product link Taobao / 1688 / Tmall…',
@@ -1371,6 +1373,8 @@
       /* ─── order form label split by span ─── */
       'อธิบายสิ่งที่อยากได้': '描述需求',
       '(สี / ไซต์ / รุ่น / จำนวน / รายละเอียด)': '(颜色 / 尺码 / 型号 / 数量 / 详情)',
+      'รูปสินค้า': '商品图片',
+      '(อัปโหลดจากเครื่อง)': '(从设备上传)',
 
       /* ─── follow-up: order-form fields + LINE contact ─── */
       'ลิงก์สินค้า Taobao / 1688 / Tmall…': '商品链接 淘宝 / 1688 / 天猫…',
