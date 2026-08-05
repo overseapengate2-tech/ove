@@ -496,6 +496,21 @@
       'ชำระค่านำเข้าสินค้า': 'Pay import fee',
       'ส่งสินค้ามาตามที่อยู่โกดังจีน': 'Ship goods to our China warehouse address',
 
+      /* ─── contact section (homepage bottom) ─── */
+      'ช่องทางการติดต่อ': 'Contact Channels',
+      'ติดต่อ Oversea PenGate': 'Contact Oversea PenGate',
+      'มีคำถามเพิ่มเติม ทักเราได้ทุกช่องทาง ยินดีให้บริการ': 'Any questions? Reach us anytime — happy to help.',
+      'โทรศัพท์': 'Phone',
+
+      /* ─── footer ─── */
+      'บริการนำเข้าสินค้าจากจีน': 'Import from China service',
+      'ตรวจสอบออเดอร์': 'Track order',
+      'สั่งซื้อสินค้า': 'Order products',
+
+      /* ─── order form label split by span ─── */
+      'อธิบายสิ่งที่อยากได้': 'Describe what you want',
+      '(สี / ไซต์ / รุ่น / จำนวน / รายละเอียด)': '(color / size / model / qty / details)',
+
       /* ─── follow-up: order-form fields + LINE contact ─── */
       'ลิงก์สินค้า Taobao / 1688 / Tmall…': 'Product link Taobao / 1688 / Tmall…',
       'รูปสินค้า (อัปโหลดจากเครื่อง)': 'Product photo (upload from device)',
@@ -993,6 +1008,21 @@
       'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง': '团队通知客户取货/派送',
       'ชำระค่านำเข้าสินค้า': '支付进口费用',
       'ส่งสินค้ามาตามที่อยู่โกดังจีน': '寄送到中国仓库地址',
+
+      /* ─── contact section (homepage bottom) ─── */
+      'ช่องทางการติดต่อ': '联系渠道',
+      'ติดต่อ Oversea PenGate': '联系 Oversea PenGate',
+      'มีคำถามเพิ่มเติม ทักเราได้ทุกช่องทาง ยินดีให้บริการ': '有任何疑问 随时联系我们 竭诚为您服务',
+      'โทรศัพท์': '电话',
+
+      /* ─── footer ─── */
+      'บริการนำเข้าสินค้าจากจีน': '中国商品进口服务',
+      'ตรวจสอบออเดอร์': '订单查询',
+      'สั่งซื้อสินค้า': '订购商品',
+
+      /* ─── order form label split by span ─── */
+      'อธิบายสิ่งที่อยากได้': '描述需求',
+      '(สี / ไซต์ / รุ่น / จำนวน / รายละเอียด)': '(颜色 / 尺码 / 型号 / 数量 / 详情)',
 
       /* ─── follow-up: order-form fields + LINE contact ─── */
       'ลิงก์สินค้า Taobao / 1688 / Tmall…': '商品链接 淘宝 / 1688 / 天猫…',
