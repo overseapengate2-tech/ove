@@ -855,6 +855,16 @@ $('loginBtn').addEventListener('click', () => {
   try{ sessionStorage.setItem('opg_admin_key', k); }catch(e){}
   $('loginErr').style.display = 'none';
   loadOrders(0);
+  /* preload members cache so order list / detail modal can show OP-XXXX
+     next to customer names without a second click to open the members panel */
+  (async ()=>{
+    try{
+      const r = await fetch(`${API_BASE}/api/address?members=1`, { headers:{ 'x-admin-key': adminKey } });
+      const j = await r.json();
+      if(j.ok) membersCache = j.members || [];
+      if(typeof renderTable === 'function') renderTable();
+    }catch(e){}
+  })();
 });
 $('logoutBtn').addEventListener('click', () => {
   adminKey = ''; allOrders = []; filteredOrders = [];
@@ -1112,7 +1122,7 @@ function renderTable() {
     return `<tr${o.billGroup?' style="background:#eff6ff;box-shadow:inset 3px 0 0 #0ea5e9"':''}>
       <td data-label="เลขออเดอร์"><span class="order-no">${o.orderNo}</span>${o.kind==='import'?`<div style="margin-top:3px"><span style="background:#dbeafe;color:#1d4ed8;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700" title="ลูกค้าส่งของเข้าโกดังเอง">📥 นำเข้า</span></div>`:''}${o.source==='pay'?`<div style="margin-top:3px"><span style="background:#dcfce7;color:#15803d;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700" title="ลูกค้าวางลิงก์ผ่านหน้าฝากจ่ายเงิน">💴 ฝากจ่ายเงิน</span></div>`:''}${o.payReview?`<div style="margin-top:3px"><span style="background:#fef3c7;color:#b45309;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700" title="ลูกค้าแนบสลิปแล้ว รอตรวจสอบ">⏳ รอตรวจสลิป</span></div>`:''}${o.billGroup?`<div style="margin-top:3px"><span style="background:#e0f2fe;color:#0369a1;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700" title="อยู่ในกลุ่มรวมบิล — คิดค่าส่งรวม">🔗 ${o.billGroup}</span></div>`:''}</td>
       <td data-label="ลูกค้า">
-        <div class="customer-name">${o.customer?.name || '—'}</div>
+        <div class="customer-name">${o.customer?.name || '—'}${(()=>{const em=String(o.customer?.email||'').toLowerCase();const mc=em?(membersCache.find(m=>String(m.email||'').toLowerCase()===em)?.memberCode||''):'';return mc?` <span style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;color:#7C6739;background:#F6F0E1;border-radius:5px;padding:1px 6px;margin-left:4px">${escapeHtml(mc)}</span>`:'';})()}</div>
         <div class="customer-line">LINE: ${o.customer?.lineId || '—'}</div>
       </td>
       <td data-label="สินค้า"><span class="items-count">📦 ${(o.items||[]).length} รายการ</span></td>
@@ -1203,6 +1213,7 @@ function openDetail(no) {
     <div class="detail-row"><span class="k">เลขออเดอร์</span><span class="v" style="font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:18px;color:var(--brand-700)">${o.orderNo}</span></div>
     <div class="detail-row"><span class="k">สถานะ</span><span class="v">${statusPill(o.status,o.statusText)}</span></div>
     <div class="detail-row"><span class="k">ชื่อ</span><span class="v">${o.customer?.name||'—'}</span></div>
+    <div class="detail-row"><span class="k">รหัสสมาชิก</span><span class="v" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:700;color:#7C6739">${(()=>{const em=String(o.customer?.email||'').toLowerCase();return em?(membersCache.find(m=>String(m.email||'').toLowerCase()===em)?.memberCode||'—'):'—';})()}</span></div>
     <div class="detail-row"><span class="k">LINE</span><span class="v">${o.customer?.lineId||'—'}</span></div>
     ${o.customer?.email?`<div class="detail-row"><span class="k">อีเมล</span><span class="v">${o.customer.email}</span></div>`:''}
     ${o.customer?.address?.detail?`<div class="detail-row"><span class="k">📍 ที่อยู่จัดส่ง</span><span class="v" style="white-space:pre-wrap">${escapeHtml(o.customer.address.detail)}${o.customer.address.phone?`\nโทร: ${escapeHtml(o.customer.address.phone)}`:''}</span></div>`:''}
