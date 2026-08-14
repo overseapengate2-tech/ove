@@ -1820,6 +1820,15 @@
   function setLang(lang) {
     if (!lang || lang === currentLang) return;
     localStorage.setItem(LANG_KEY, lang);
+    /* Switching language reloads the page, which silently closes any open
+       modal. If the user hit a flag from inside one (the login modal carries
+       its own switcher), remember it so the page can reopen it after the
+       reload instead of dumping them back on the plain homepage. */
+    try {
+      var openModal = document.querySelector('.modal-overlay[aria-hidden="false"]');
+      if (openModal && openModal.id) sessionStorage.setItem('opg_reopen_modal', openModal.id);
+      else sessionStorage.removeItem('opg_reopen_modal');
+    } catch (e) {}
     location.reload();
   }
 

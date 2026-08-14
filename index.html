@@ -1841,6 +1841,9 @@ function switchAuthView(mode){
   $('#forgotFormBox').style.display = mode === 'forgot' ? 'block' : 'none';
   const setEmpty = id => { const el = $('#'+id); if (el) el.textContent = ''; };
   setEmpty('liHelp'); setEmpty('rgHelp'); setEmpty('fpHelp');
+  /* Remember the panel so a language switch (which reloads the page) can put
+     the user back where they were instead of always on the login view. */
+  try{ sessionStorage.setItem('opg_auth_view', mode); }catch(e){}
 }
 
 async function doEmailLogin(){
@@ -2890,9 +2893,26 @@ updatePreview();
 })();
 
 (function maybeOpenModal(){
+  const loggedIn = !!localStorage.getItem('opg_user');
+
+  // ผู้ใช้กดเปลี่ยนภาษาขณะเปิดหน้าต่างล็อกอินอยู่ → i18n สั่ง reload ทำให้หน้าต่างหาย
+  // และ opg_login_prompted ที่ตั้งไว้รอบก่อนกันไม่ให้เด้งซ้ำ = ล็อกอินต่อไม่ได้
+  // จึงเปิดกลับให้ พร้อมคืนแท็บเดิม (เข้าสู่ระบบ / สมัคร / ลืมรหัสผ่าน)
+  let reopen = null;
+  try{ reopen = sessionStorage.getItem('opg_reopen_modal'); }catch(e){}
+  if(reopen === 'loginModal'){
+    try{ sessionStorage.removeItem('opg_reopen_modal'); }catch(e){}
+    if(!loggedIn){
+      let view = 'login';
+      try{ view = sessionStorage.getItem('opg_auth_view') || 'login'; }catch(e){}
+      setTimeout(()=>{ switchAuthView(view); openLoginModal(); }, 200);
+      return;
+    }
+  }
+
   // เด้งหน้าต่างล็อกอินอัตโนมัติแค่ "ครั้งแรก" ที่เข้าเว็บเท่านั้น
   // กลับมาจากหน้าอื่น (เช่น รีวิว) จะไม่เด้งซ้ำ และถ้าล็อกอินอยู่แล้วก็ไม่เด้ง
-  if(!localStorage.getItem('opg_user') && !sessionStorage.getItem('opg_login_prompted')){
+  if(!loggedIn && !sessionStorage.getItem('opg_login_prompted')){
     sessionStorage.setItem('opg_login_prompted','1');
     setTimeout(openLoginModal, 700);
   }
