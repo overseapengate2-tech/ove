@@ -2733,6 +2733,11 @@ async function savePageAddr(){
     st.textContent='✓ บันทึกแล้ว'; st.style.color='#1f9d55';
     renderAddrPage();
     renderAddrSelect(myAddresses.length-1);   // sync ฟอร์มสั่งซื้อ
+    /* ถ้าผู้ใช้มาจากหน้าอื่น (เช่น PO detail) → พากลับหลัง 800ms */
+    const ref = document.referrer || '';
+    const sameOrigin = ref && ref.startsWith(location.origin);
+    const notThisPage = sameOrigin && !ref.replace(location.origin,'').startsWith('/#') && ref.replace(location.origin,'').split('#')[0] !== location.pathname;
+    if(notThisPage){ setTimeout(()=>{ history.back(); }, 800); }
   }catch(e){ st.textContent='❌ '+e.message; st.style.color='#c0392b'; }
 }
 
