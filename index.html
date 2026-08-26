@@ -1179,8 +1179,7 @@ body{font-variant-numeric:tabular-nums}
         stepCol('ORDER','🛒 ขั้นตอนการสั่งซื้อ','🚚',ORDER_STEPS) +
         stepCol('IMPORT','🚢 ขั้นตอนการนำเข้าสินค้า','📦',IMPORT_STEPS);
     } else if(kind==='import'){
-      stepsWrap.classList.add('single');
-      stepsWrap.innerHTML = stepCol('IMPORT','🚢 ขั้นตอนการนำเข้าสินค้า','📦',IMPORT_STEPS);
+      stepsWrap.innerHTML = '';
     } else {
       stepsWrap.classList.add('single');
       stepsWrap.innerHTML = stepCol('PAY','💴 ขั้นตอนการฝากจ่ายเงิน','💴',[]);
