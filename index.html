@@ -1096,7 +1096,13 @@ body{font-variant-numeric:tabular-nums}
 .howOpt button.active{background:#9C8654;color:#fff;border-color:#63522C}
 .howOpt button .em{display:block;font-size:26px;margin-bottom:6px}
 #howVideoWrap{background:#000;border-radius:12px;overflow:hidden;min-height:240px;display:flex;align-items:center;justify-content:center;color:#888;font-size:14px}
-#howVideoWrap video{width:100%;display:block;max-height:70vh}
+#howVideoWrap video{width:100%;display:block;max-height:60vh}
+#howStepsWrap{margin-top:18px}
+#howStepsWrap h4{font-family:'Playfair Display',serif;font-size:18px;color:#63522C;margin-bottom:12px;text-align:center}
+#howStepsWrap .row{display:flex;align-items:center;gap:12px;background:#F6F0E1;border:1px solid #E7DBC0;border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13.5px;font-weight:600;color:#3C3526}
+#howStepsWrap .row .step{width:32px;height:32px;border-radius:50%;background:#7C6739;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+#howStepsWrap .row .ic{font-size:18px;flex-shrink:0}
+#howStepsWrap .row small{display:block;font-weight:400;color:#7C715B;font-size:11.5px;margin-top:2px}
 @media(max-width:520px){
   .howOpt{grid-template-columns:1fr;gap:8px}
   .howOpt button{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left}
@@ -1114,6 +1120,7 @@ body{font-variant-numeric:tabular-nums}
       <button data-how="pay"><span class="em">💴</span>ฝากจ่ายเงิน</button>
     </div>
     <div id="howVideoWrap"></div>
+    <div id="howStepsWrap"></div>
   </div>
 </div>
 <script>
@@ -1122,11 +1129,42 @@ body{font-variant-numeric:tabular-nums}
   var modal=document.getElementById('howOrderModal');
   var closeBtn=document.getElementById('howOrderClose');
   var wrap=document.getElementById('howVideoWrap');
+  var stepsWrap=document.getElementById('howStepsWrap');
   var opts=modal.querySelectorAll('.howOpt button');
   var VIDEOS={
     order: '/video-how-to-order.mp4',
-    import: '',   /* ยังไม่มีวิดีโอ */
+    import: '',
     pay: ''
+  };
+  var STEPS={
+    order: {
+      title:'🛒 ขั้นตอนการฝากสั่งซื้อ',
+      list:[
+        {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
+        {n:2,ic:'📝',t:'กรอกแบบฟอร์มการสั่งซื้อสินค้า'},
+        {n:3,ic:'🧮',t:'ทีมงานสรุปยอดการชำระเงินงวดที่ 1',s:'(ค่าสินค้า + ค่าขนส่งในจีน)'},
+        {n:4,ic:'💳',t:'ลูกค้าชำระเงินงวดที่ 1'},
+        {n:5,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
+        {n:6,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
+        {n:7,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
+        {n:8,ic:'💰',t:'ลูกค้าชำระค่านำเข้าสินค้า'}
+      ]
+    },
+    import: {
+      title:'🚢 ขั้นตอนการนำเข้าสินค้า',
+      list:[
+        {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
+        {n:2,ic:'📮',t:'ส่งสินค้ามาตามที่อยู่โกดังจีน'},
+        {n:3,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
+        {n:4,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
+        {n:5,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
+        {n:6,ic:'💰',t:'ชำระค่านำเข้าสินค้า'}
+      ]
+    },
+    pay: {
+      title:'💴 ขั้นตอนการฝากจ่ายเงิน',
+      list:[]
+    }
   };
   function render(kind){
     var url=VIDEOS[kind];
@@ -1135,10 +1173,20 @@ body{font-variant-numeric:tabular-nums}
     } else {
       wrap.innerHTML='<div style="padding:40px 20px;text-align:center">🎬 วิดีโอกำลังจัดทำ<br><span style="font-size:12.5px;color:#aaa">เร็วๆ นี้</span></div>';
     }
+    var s=STEPS[kind]||{title:'',list:[]};
+    if(s.list.length){
+      stepsWrap.innerHTML='<h4>'+s.title+'</h4>'+s.list.map(function(r){
+        return '<div class="row"><span class="step">'+r.n+'</span><span class="ic">'+r.ic+'</span><span>'+r.t+(r.s?'<small>'+r.s+'</small>':'')+'</span></div>';
+      }).join('');
+    } else {
+      stepsWrap.innerHTML='<h4>'+s.title+'</h4><div style="text-align:center;color:#aaa;padding:20px 0;font-size:13px">รายละเอียดขั้นตอนกำลังจัดทำ</div>';
+    }
   }
   function open(){ modal.classList.add('open'); render('order'); }
-  function close(){ modal.classList.remove('open'); wrap.innerHTML=''; }
+  function close(){ modal.classList.remove('open'); wrap.innerHTML=''; stepsWrap.innerHTML=''; }
   openBtn && openBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
+  var navBtn=document.getElementById('navHowToOrder');
+  navBtn && navBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
   closeBtn.addEventListener('click',close);
   modal.addEventListener('click',function(e){ if(e.target===modal) close(); });
   opts.forEach(function(b){ b.addEventListener('click',function(){
@@ -1278,7 +1326,7 @@ body{font-variant-numeric:tabular-nums}
     <div class="spacer"></div>
     <nav class="nav-links">
       <a href="#top">หน้าแรก</a>
-      <a href="#how">วิธีสั่งซื้อ</a>
+      <a href="#" id="navHowToOrder">วิธีสั่งซื้อ</a>
       <a href="/calc.html">คำนวณค่าส่ง</a>
       <a href="#order">สั่งซื้อ</a>
       <a href="/track.html">ตรวจสอบสถานะ</a>
@@ -1522,14 +1570,13 @@ body{font-variant-numeric:tabular-nums}
   </svg>
 </div>
 
-<!-- HOW IT WORKS -->
-<section id="how" style="position:relative">
-  <!-- left orb + tags -->
+<!-- HOW IT WORKS section removed — moved to sidebar modal (📹 วิธีสั่งซื้อ) -->
+<section id="how" style="display:none"></section>
+<section id="how-removed-original" style="display:none">
   <div class="sdeco how-orb-l" aria-hidden="true"></div>
   <div class="sdeco how-tag how-tag-l1" aria-hidden="true">📦 Taobao</div>
   <div class="sdeco how-tag how-tag-l2" aria-hidden="true">🛒 สั่งง่าย</div>
   <div class="sdeco how-tag how-tag-l3" aria-hidden="true">✅ ฟรีเช็คราคา</div>
-  <!-- right orb + tags -->
   <div class="sdeco how-orb-r" aria-hidden="true"></div>
   <div class="sdeco how-tag how-tag-r1" aria-hidden="true">🚚 ส่งถึงไทย</div>
   <div class="sdeco how-tag how-tag-r2" aria-hidden="true">💬 LINE</div>
@@ -1608,23 +1655,10 @@ body{font-variant-numeric:tabular-nums}
         </div>
       </div>
 
-      <!-- ขั้นตอนการนำเข้าสินค้า -->
-      <div class="flow-col">
-        <div class="sub">IMPORT</div>
-        <h3>🚢 ขั้นตอนการนำเข้าสินค้า</h3>
-        <div class="hub">📦</div>
-        <div class="steps-list">
-          <div class="row"><span class="step">1</span><span class="ic">🔐</span><span>เปิดรหัสสมาชิกกับ Oversea PenGate</span></div>
-          <div class="row"><span class="step">2</span><span class="ic">📮</span><span>ส่งสินค้ามาตามที่อยู่โกดังจีน</span></div>
-          <div class="row"><span class="step">3</span><span class="ic">📦</span><span>พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง</span></div>
-          <div class="row"><span class="step">4</span><span class="ic">🚢</span><span>สินค้าขึ้นตู้ส่งมายังไทย</span></div>
-          <div class="row"><span class="step">5</span><span class="ic">🏠</span><span>สินค้าเข้าโกดังไทย<small>ทีมงานแจ้งลูกค้ารับของ/จัดส่ง</small></span></div>
-          <div class="row"><span class="step">6</span><span class="ic">💰</span><span>ชำระค่านำเข้าสินค้า</span></div>
-        </div>
-      </div>
     </div>
   </div><!-- /wrap -->
 </section>
+<style>#how-removed-original,#how{display:none !important}</style>
 
 <!-- ════════ แกลเลอรีงานขนส่งจริง (ดึงรูปจากรีวิวอัตโนมัติ) ════════ -->
 <section id="shipworks" style="display:none;position:relative;padding:46px 0 40px">
