@@ -1097,12 +1097,17 @@ body{font-variant-numeric:tabular-nums}
 .howOpt button .em{display:block;font-size:26px;margin-bottom:6px}
 #howVideoWrap{background:#000;border-radius:12px;overflow:hidden;min-height:240px;display:flex;align-items:center;justify-content:center;color:#888;font-size:14px}
 #howVideoWrap video{width:100%;display:block;max-height:60vh}
-#howStepsWrap{margin-top:18px}
-#howStepsWrap h4{font-family:'Playfair Display',serif;font-size:18px;color:#63522C;margin-bottom:12px;text-align:center}
-#howStepsWrap .row{display:flex;align-items:center;gap:12px;background:#F6F0E1;border:1px solid #E7DBC0;border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13.5px;font-weight:600;color:#3C3526}
-#howStepsWrap .row .step{width:32px;height:32px;border-radius:50%;background:#7C6739;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
-#howStepsWrap .row .ic{font-size:18px;flex-shrink:0}
-#howStepsWrap .row small{display:block;font-weight:400;color:#7C715B;font-size:11.5px;margin-top:2px}
+#howStepsWrap{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){#howStepsWrap{grid-template-columns:1fr}}
+#howStepsWrap.single{grid-template-columns:1fr}
+.howCol{background:#fff;border:1.5px solid #E7DBC0;border-radius:14px;padding:18px 16px}
+.howCol .sub{text-align:center;font-size:11px;letter-spacing:3px;color:#9C8654;font-weight:700;margin-bottom:6px}
+.howCol h4{font-family:'Playfair Display',serif;font-size:17px;color:#63522C;margin-bottom:6px;text-align:center}
+.howCol .hub{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#63522C,#3C2A0E);display:grid;place-items:center;color:#E7DBC0;font-size:24px;margin:6px auto 14px}
+.howCol .row{display:flex;align-items:center;gap:10px;background:#F6F0E1;border:1px solid #E7DBC0;border-radius:11px;padding:9px 12px;margin-bottom:7px;font-size:12.5px;font-weight:600;color:#3C3526}
+.howCol .row .step{width:28px;height:28px;border-radius:50%;background:#7C6739;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.howCol .row .ic{font-size:16px;flex-shrink:0}
+.howCol .row small{display:block;font-weight:400;color:#7C715B;font-size:11px;margin-top:2px}
 @media(max-width:520px){
   .howOpt{grid-template-columns:1fr;gap:8px}
   .howOpt button{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left}
@@ -1136,36 +1141,30 @@ body{font-variant-numeric:tabular-nums}
     import: '',
     pay: ''
   };
-  var STEPS={
-    order: {
-      title:'🛒 ขั้นตอนการฝากสั่งซื้อ',
-      list:[
-        {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
-        {n:2,ic:'📝',t:'กรอกแบบฟอร์มการสั่งซื้อสินค้า'},
-        {n:3,ic:'🧮',t:'ทีมงานสรุปยอดการชำระเงินงวดที่ 1',s:'(ค่าสินค้า + ค่าขนส่งในจีน)'},
-        {n:4,ic:'💳',t:'ลูกค้าชำระเงินงวดที่ 1'},
-        {n:5,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
-        {n:6,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
-        {n:7,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
-        {n:8,ic:'💰',t:'ลูกค้าชำระค่านำเข้าสินค้า'}
-      ]
-    },
-    import: {
-      title:'🚢 ขั้นตอนการนำเข้าสินค้า',
-      list:[
-        {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
-        {n:2,ic:'📮',t:'ส่งสินค้ามาตามที่อยู่โกดังจีน'},
-        {n:3,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
-        {n:4,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
-        {n:5,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
-        {n:6,ic:'💰',t:'ชำระค่านำเข้าสินค้า'}
-      ]
-    },
-    pay: {
-      title:'💴 ขั้นตอนการฝากจ่ายเงิน',
-      list:[]
-    }
-  };
+  var ORDER_STEPS=[
+    {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
+    {n:2,ic:'📝',t:'กรอกแบบฟอร์มการสั่งซื้อสินค้า'},
+    {n:3,ic:'🧮',t:'ทีมงานสรุปยอดการชำระเงินงวดที่ 1',s:'(ค่าสินค้า + ค่าขนส่งในจีน)'},
+    {n:4,ic:'💳',t:'ลูกค้าชำระเงินงวดที่ 1'},
+    {n:5,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
+    {n:6,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
+    {n:7,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
+    {n:8,ic:'💰',t:'ลูกค้าชำระค่านำเข้าสินค้า'}
+  ];
+  var IMPORT_STEPS=[
+    {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
+    {n:2,ic:'📮',t:'ส่งสินค้ามาตามที่อยู่โกดังจีน'},
+    {n:3,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
+    {n:4,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
+    {n:5,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
+    {n:6,ic:'💰',t:'ชำระค่านำเข้าสินค้า'}
+  ];
+  function stepCol(sub,title,hub,list){
+    if(!list.length) return '<div class="howCol"><div class="sub">'+sub+'</div><h4>'+title+'</h4><div class="hub">'+hub+'</div><div style="text-align:center;color:#aaa;padding:16px 0;font-size:12.5px">รายละเอียดขั้นตอนกำลังจัดทำ</div></div>';
+    return '<div class="howCol"><div class="sub">'+sub+'</div><h4>'+title+'</h4><div class="hub">'+hub+'</div>'+list.map(function(r){
+      return '<div class="row"><span class="step">'+r.n+'</span><span class="ic">'+r.ic+'</span><span>'+r.t+(r.s?'<small>'+r.s+'</small>':'')+'</span></div>';
+    }).join('')+'</div>';
+  }
   function render(kind){
     var url=VIDEOS[kind];
     if(url){
@@ -1173,13 +1172,18 @@ body{font-variant-numeric:tabular-nums}
     } else {
       wrap.innerHTML='<div style="padding:40px 20px;text-align:center">🎬 วิดีโอกำลังจัดทำ<br><span style="font-size:12.5px;color:#aaa">เร็วๆ นี้</span></div>';
     }
-    var s=STEPS[kind]||{title:'',list:[]};
-    if(s.list.length){
-      stepsWrap.innerHTML='<h4>'+s.title+'</h4>'+s.list.map(function(r){
-        return '<div class="row"><span class="step">'+r.n+'</span><span class="ic">'+r.ic+'</span><span>'+r.t+(r.s?'<small>'+r.s+'</small>':'')+'</span></div>';
-      }).join('');
+    stepsWrap.classList.remove('single');
+    if(kind==='order'){
+      /* ฝากสั่งซื้อ: โชว์ทั้ง ORDER + IMPORT 2 คอลัมน์ */
+      stepsWrap.innerHTML =
+        stepCol('ORDER','🛒 ขั้นตอนการสั่งซื้อ','🚚',ORDER_STEPS) +
+        stepCol('IMPORT','🚢 ขั้นตอนการนำเข้าสินค้า','📦',IMPORT_STEPS);
+    } else if(kind==='import'){
+      stepsWrap.classList.add('single');
+      stepsWrap.innerHTML = stepCol('IMPORT','🚢 ขั้นตอนการนำเข้าสินค้า','📦',IMPORT_STEPS);
     } else {
-      stepsWrap.innerHTML='<h4>'+s.title+'</h4><div style="text-align:center;color:#aaa;padding:20px 0;font-size:13px">รายละเอียดขั้นตอนกำลังจัดทำ</div>';
+      stepsWrap.classList.add('single');
+      stepsWrap.innerHTML = stepCol('PAY','💴 ขั้นตอนการฝากจ่ายเงิน','💴',[]);
     }
   }
   function open(){ modal.classList.add('open'); render('order'); }
