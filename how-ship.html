@@ -37,33 +37,7 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
   <a href="/">← หน้าหลัก</a>
   <h1>🚚 การส่งสินค้า</h1>
 </div>
-<div class="wrap" id="guestRateWrap" style="display:none">
-  <div style="max-width:520px;margin:0 auto;display:grid;gap:16px">
-    <div class="card" style="padding:22px 20px">
-      <div style="font-weight:700;color:var(--brand-700);font-size:15px;margin-bottom:14px">💱 เรทแลกเงินวันนี้</div>
-      <div style="background:linear-gradient(135deg,#FFF9E6,#FFF0C0);border:1.5px solid #E5B84D;border-radius:12px;padding:22px;text-align:center">
-        <div style="font-size:13px;color:var(--ink-soft);margin-bottom:6px">1 หยวน (¥) =</div>
-        <div style="font-family:'Playfair Display',serif;font-size:38px;font-weight:800;color:var(--brand-700);line-height:1"><span id="rmbRateVal">…</span> <span style="font-size:26px">บาท</span></div>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:8px">(เรทอัปเดตจากแอดมิน)</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="sec-t"> ที่อยู่โกดังจีนสำหรับส่งสินค้า</div>
-      <div class="addr-box" style="text-align:center;padding:28px 20px">
-        <div style="font-size:56px;line-height:1;margin-bottom:12px">🔒</div>
-        <div style="font-size:15px;font-weight:700;color:var(--brand-700);margin-bottom:6px">กรุณาเข้าสู่ระบบเพื่อดูที่อยู่โกดังจีน</div>
-        <div style="font-size:13px;color:var(--ink-soft);line-height:1.55;margin-bottom:14px">เฉพาะสมาชิกเท่านั้น — เพื่อให้ระบบจับคู่สินค้ากับบัญชีคุณอัตโนมัติ<br>ไม่ต้องแจ้งซ้ำเมื่อของถึงโกดัง</div>
-        <a href="/" class="copy" style="display:inline-block;text-decoration:none;background:var(--brand-600,#7C6739);color:#fff;padding:11px 24px">🔑 เข้าสู่ระบบ / สมัครสมาชิก</a>
-        <div style="display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--ink-xsoft,#B0A48C);font-size:12px">
-          <div style="flex:1;height:1px;background:var(--border)"></div><span>หรือ</span><div style="flex:1;height:1px;background:var(--border)"></div>
-        </div>
-        <a href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener" class="copy" style="display:inline-block;text-decoration:none;background:#06C755;color:#fff;padding:10px 22px">💬 แอดไลน์ถามแอดมิน</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="wrap" id="memberWrap" style="display:none">
+<div class="wrap">
  <div class="cards3">
 
   <div class="card">
@@ -141,13 +115,6 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 </div>
 <script>
 const me=JSON.parse(localStorage.getItem('opg_user')||'null');
-document.getElementById(me&&me.email?'memberWrap':'guestRateWrap').style.display='block';
-if(!me||!me.email){
-  fetch('/api/orders?rate=1').then(r=>r.json()).then(d=>{
-    const v=Number(d&&d.rate)||5.2;
-    const el=document.getElementById('rmbRateVal'); if(el) el.textContent=v.toFixed(2);
-  }).catch(()=>{ const el=document.getElementById('rmbRateVal'); if(el) el.textContent='5.20'; });
-}
 if(!me||!me.email){ document.getElementById('impLogin').style.display='block'; document.getElementById('impForm').style.display='none'; }
 document.getElementById('impPick').addEventListener('click',()=>document.getElementById('impFile').click());
 document.getElementById('impFile').addEventListener('change',function(){
