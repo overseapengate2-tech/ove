@@ -1191,6 +1191,8 @@ body{font-variant-numeric:tabular-nums}
   function close(){ modal.classList.remove('open'); wrap.innerHTML=''; stepsWrap.innerHTML=''; }
   openBtn && openBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
   var navBtn=document.getElementById('navHowToOrder');
+  var footerBtn=document.getElementById('footerHowToOrder');
+  footerBtn && footerBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
   navBtn && navBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
   closeBtn.addEventListener('click',close);
   modal.addEventListener('click',function(e){ if(e.target===modal) close(); });
@@ -1886,7 +1888,7 @@ body{font-variant-numeric:tabular-nums}
         <div>
           <div style="color:#C4A96A;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">เมนู</div>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="/how-order.html" style="color:rgba(255,255,255,.6);font-size:14px;text-decoration:none;transition:.15s" onmouseover="this.style.color='#C4A96A'" onmouseout="this.style.color='rgba(255,255,255,.6)'">วิธีสั่งซื้อ</a>
+            <a href="#" id="footerHowToOrder" style="color:rgba(255,255,255,.6);font-size:14px;text-decoration:none;transition:.15s" onmouseover="this.style.color='#C4A96A'" onmouseout="this.style.color='rgba(255,255,255,.6)'">วิธีสั่งซื้อ</a>
             <a href="#order" style="color:rgba(255,255,255,.6);font-size:14px;text-decoration:none;transition:.15s" onmouseover="this.style.color='#C4A96A'" onmouseout="this.style.color='rgba(255,255,255,.6)'">สั่งซื้อสินค้า</a>
             <a href="/track.html" style="color:rgba(255,255,255,.6);font-size:14px;text-decoration:none;transition:.15s" onmouseover="this.style.color='#C4A96A'" onmouseout="this.style.color='rgba(255,255,255,.6)'">ตรวจสอบออเดอร์</a>
           </div>
