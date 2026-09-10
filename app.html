@@ -1191,8 +1191,10 @@ body{font-variant-numeric:tabular-nums}
   function close(){ modal.classList.remove('open'); wrap.innerHTML=''; stepsWrap.innerHTML=''; }
   openBtn && openBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
   var navBtn=document.getElementById('navHowToOrder');
-  var footerBtn=document.getElementById('footerHowToOrder');
-  footerBtn && footerBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
+  document.addEventListener('click', function(e){
+    var el = e.target && e.target.closest && e.target.closest('#footerHowToOrder');
+    if(el){ e.preventDefault(); open(); }
+  });
   navBtn && navBtn.addEventListener('click',function(e){ e.preventDefault(); open(); });
   closeBtn.addEventListener('click',close);
   modal.addEventListener('click',function(e){ if(e.target===modal) close(); });
