@@ -50,7 +50,17 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 
   <div class="card">
     <div class="sec-t"> ที่อยู่โกดังจีนสำหรับส่งสินค้า</div>
-    <div class="addr-box">
+    <div class="addr-box" id="addrBoxLocked" style="display:none;text-align:center;padding:28px 20px">
+      <div style="font-size:56px;line-height:1;margin-bottom:12px">🔒</div>
+      <div style="font-size:15px;font-weight:700;color:var(--brand-700);margin-bottom:6px">กรุณาเข้าสู่ระบบเพื่อดูที่อยู่โกดังจีน</div>
+      <div style="font-size:13px;color:var(--ink-soft);line-height:1.55;margin-bottom:14px">เฉพาะสมาชิกเท่านั้น — เพื่อให้ระบบจับคู่สินค้ากับบัญชีคุณอัตโนมัติ<br>ไม่ต้องแจ้งซ้ำเมื่อของถึงโกดัง</div>
+      <a href="/" class="copy" style="display:inline-block;text-decoration:none;background:var(--brand-600,#7C6739);color:#fff;padding:11px 24px">🔑 เข้าสู่ระบบ / สมัครสมาชิก</a>
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--ink-xsoft,#B0A48C);font-size:12px">
+        <div style="flex:1;height:1px;background:var(--border)"></div><span>หรือ</span><div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+      <a href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener" class="copy" style="display:inline-block;text-decoration:none;background:#06C755;color:#fff;padding:10px 22px">💬 แอดไลน์ถามแอดมิน</a>
+    </div>
+    <div class="addr-box" id="addrBoxReal" style="display:none">
       <div class="lbl">ผู้รับ / ที่อยู่จัดส่ง</div>
       <div class="a">收件人: 李裕<br>手机号码: 13970527527<br>所在地区: 广东省广州市<br>白云区均禾街道<br>详细地址: 均禾街石马村桃红二街3号洋驼帮仓库6号仓 88188<br>备注: <span id="chNote">OVERSEA</span></div>
       <div class="tel">&#9742; 13970527527</div>
@@ -115,6 +125,7 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 </div>
 <script>
 const me=JSON.parse(localStorage.getItem('opg_user')||'null');
+document.getElementById(me&&me.email?'addrBoxReal':'addrBoxLocked').style.display='block';
 if(!me||!me.email){ document.getElementById('impLogin').style.display='block'; document.getElementById('impForm').style.display='none'; }
 document.getElementById('impPick').addEventListener('click',()=>document.getElementById('impFile').click());
 document.getElementById('impFile').addEventListener('change',function(){
