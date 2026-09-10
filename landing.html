@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Oversea PenGate · นำเข้าสินค้าจากจีน · สั่งง่าย ส่งเร็ว ราคาถูก</title>
+<meta name="description" content="Oversea PenGate — บริการนำเข้าสินค้าจากจีน Taobao Tmall 1688 ส่งถึงไทย เริ่มต้น 18 บาท/กก."/>
+<link rel="icon" href="/logo.png?v=2"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#9C8654;--brand-600:#7C6739;--brand-700:#63522C;--brand-50:#F6F0E1;--brand-100:#E7DBC0;--ink:#3C3526;--ink-soft:#7C715B;--ink-xsoft:#B0A48C;--bg:#FAF6EE;--border:#ECE2CE;--hero-a:#F5D577;--hero-b:#F2C24E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,249,244,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:22px;padding:12px 24px;height:70px}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-brand .lg{width:44px;height:44px;background:url('/logo.png') center/contain no-repeat}
+.nav-brand .wm b{display:block;font-family:'Playfair Display',serif;font-weight:800;font-size:16px;color:var(--brand-700);letter-spacing:3px;line-height:1}
+.nav-brand .wm small{display:block;font-size:9.5px;letter-spacing:4px;color:var(--brand);margin-top:3px}
+.nav-links{display:flex;gap:22px;flex:1;justify-content:center}
+.nav-links a{color:var(--ink);font-weight:600;font-size:14px;text-decoration:none;padding:6px 2px;border-bottom:2px solid transparent;transition:.15s}
+.nav-links a.active,.nav-links a:hover{color:var(--brand-700);border-bottom-color:var(--brand)}
+.nav-phone{font-size:13px;color:var(--ink-soft);font-weight:600;margin-right:4px}
+.nav-phone b{color:var(--brand-700)}
+.nav-actions{display:flex;gap:8px}
+.nav-btn{padding:8px 18px;border-radius:999px;font-weight:700;font-size:13.5px;text-decoration:none;cursor:pointer;border:0;font-family:inherit}
+.nav-line{background:#06C755;color:#fff}
+.nav-line:hover{background:#05a548}
+.nav-login{background:var(--brand-600);color:#fff}
+.nav-login:hover{background:var(--brand-700)}
+@media(max-width:900px){.nav-links{display:none}.nav-phone{display:none}}
+
+.hero{background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 100%);padding:60px 0 100px;position:relative;overflow:hidden;text-align:center}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(255,255,255,.35) 0%,transparent 50%);pointer-events:none}
+.hero-inner{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+.hero-brand{display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);padding:14px 28px;border-radius:20px;box-shadow:0 8px 32px rgba(124,103,57,.15);margin-bottom:38px}
+.hero-brand .lg{width:52px;height:52px;background:url('/logo.png') center/contain no-repeat}
+.hero-brand h1{font-family:'Playfair Display',serif;font-weight:800;font-size:38px;color:var(--brand-700);letter-spacing:4px;line-height:1}
+.hero-brand small{display:block;font-size:11px;letter-spacing:5px;color:var(--brand);margin-top:4px;font-weight:600}
+.hero-tag{display:flex;justify-content:center;align-items:center;gap:0;margin:36px 0 40px;flex-wrap:wrap}
+.htag{display:flex;flex-direction:column;align-items:center;padding:0 30px}
+.htag .circle{width:130px;height:130px;border-radius:50%;background:#2c2c2c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:60px;box-shadow:0 8px 28px rgba(0,0,0,.35),inset 0 -6px 12px rgba(0,0,0,.25)}
+.htag .lbl{margin-top:16px;font-weight:800;font-size:32px;color:#2c2c2c;text-shadow:0 2px 4px rgba(255,255,255,.5)}
+.htag-line{flex:0 0 100px;height:2px;background:#2c2c2c;align-self:center;margin-top:-38px}
+.hero-price{display:inline-block;background:#fff;border-radius:999px;padding:24px 50px;box-shadow:0 12px 36px rgba(0,0,0,.15)}
+.hero-price small{display:block;font-size:18px;font-weight:700;color:#5C4820;margin-bottom:4px}
+.hero-price b{font-size:80px;font-weight:900;color:#2c2c2c;line-height:1}
+.hero-price em{font-size:36px;font-weight:800;color:#2c2c2c;font-style:normal;margin-left:6px}
+.hero-price span{font-size:18px;color:#5C4820;margin-left:4px;vertical-align:8px}
+@media(max-width:800px){.hero-brand h1{font-size:28px}.htag{padding:0 12px}.htag .circle{width:90px;height:90px;font-size:42px}.htag .lbl{font-size:22px}.htag-line{flex:0 0 30px;margin-top:-24px}.hero-price{padding:16px 30px}.hero-price b{font-size:56px}.hero-price em{font-size:24px}}
+
+.section{padding:70px 24px;max-width:1240px;margin:0 auto}
+.section h2{text-align:center;font-family:'Playfair Display',serif;font-weight:800;font-size:36px;color:var(--brand-700);margin-bottom:12px}
+.section p.lead{text-align:center;color:var(--ink-soft);font-size:15px;max-width:600px;margin:0 auto 40px}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:24px}
+@media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.svc-grid{grid-template-columns:1fr}}
+.svc{text-align:center;padding:24px 18px}
+.svc .ic{width:100px;height:100px;border-radius:50%;background:var(--brand-50);border:2px solid var(--brand-100);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 16px}
+.svc b{display:block;font-size:16px;color:var(--brand-700);margin-bottom:10px;font-weight:700}
+.svc p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+
+.rates{background:linear-gradient(180deg,#FFD24A 0%,#FFC530 100%);padding:60px 0 80px}
+.rates h2{color:#3C2A0E;text-align:center;font-family:'Playfair Display',serif;font-weight:800;font-size:36px;margin-bottom:8px}
+.rates .lead2{text-align:center;color:#5C4820;font-size:14px;margin-bottom:30px}
+.rates .rate-city{text-align:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#3C2A0E;margin:22px 0 10px}
+.rates .rate-mode{text-align:center;font-weight:700;color:#3C2A0E;font-size:15px;margin-bottom:10px}
+.rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1080px;margin:0 auto 22px;padding:0 24px}
+@media(max-width:720px){.rate-grid{grid-template-columns:1fr}}
+.rate-card{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.rate-card h4{text-align:center;font-weight:700;color:#5C4820;margin-bottom:10px;font-size:14px}
+.rate-card table{width:100%;border-collapse:collapse;font-size:14px}
+.rate-card th{text-align:left;padding:6px 4px;font-weight:600;color:#7C5F1F;font-size:12.5px}
+.rate-card td{padding:8px 4px}
+.rate-card td:not(:first-child){text-align:center;font-weight:700}
+.rate-card tbody tr+tr{border-top:1px solid #f0e6c8}
+
+.cta-band{background:var(--brand-700);color:#fff;padding:44px 24px;text-align:center}
+.cta-band h3{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:14px}
+.cta-band p{opacity:.85;margin-bottom:22px}
+.cta-band a{display:inline-block;background:#fff;color:var(--brand-700);padding:13px 30px;border-radius:999px;font-weight:800;text-decoration:none;margin:4px}
+.cta-band a.line{background:#06C755;color:#fff}
+
+footer{background:#2C1F0E;color:#DCC79A;padding:36px 24px 22px}
+footer .fw{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px;justify-content:space-between}
+footer h5{color:#fff;font-size:14px;margin-bottom:12px;font-weight:700}
+footer p,footer a{font-size:13px;color:#DCC79A;text-decoration:none;line-height:1.9}
+footer a:hover{color:#fff}
+footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);text-align:center;font-size:12px;color:#8F7A55}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="/landing.html">
+      <div class="lg"></div>
+      <div class="wm"><b>OVERSEA</b><small>PENGATE</small></div>
+    </a>
+    <div class="nav-links">
+      <a href="/landing.html" class="active">หน้าแรก</a>
+      <a href="#services">บริการของเรา</a>
+      <a href="#rates">อัตราค่าบริการ</a>
+      <a href="/how-order.html">ขั้นตอนการสั่งซื้อ</a>
+      <a href="/calc.html">คำนวณค่าจัดส่ง</a>
+      <a href="#contact">ติดต่อเรา</a>
+    </div>
+    <div class="nav-phone">☎ <b>095-760-6258</b></div>
+    <div class="nav-actions">
+      <a class="nav-btn nav-line" href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener">💬 เพิ่มเพื่อน LINE</a>
+      <a class="nav-btn nav-login" href="/login.html">เข้าสู่ระบบ</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-brand">
+      <div class="lg"></div>
+      <div><h1>OVERSEA PENGATE</h1><small>นำเข้าสินค้าจีน · ปลอดภัย · ปลายทางถึงบ้าน</small></div>
+    </div>
+    <div class="hero-tag">
+      <div class="htag"><div class="circle">📱</div><div class="lbl">สั่งง่าย</div></div>
+      <div class="htag-line"></div>
+      <div class="htag"><div class="circle">🚚</div><div class="lbl">ส่งเร็ว</div></div>
+      <div class="htag-line"></div>
+      <div class="htag"><div class="circle">💰</div><div class="lbl">ราคาถูก</div></div>
+    </div>
+    <div class="hero-price">
+      <small>เริ่มต้น</small>
+      <b>18</b><em>บาท</em><span>/kg</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <h2>บริการของเรา</h2>
+  <p class="lead">ครบวงจร ตั้งแต่สั่งซื้อจีน จนถึงส่งถึงบ้านคุณในไทย</p>
+  <div class="svc-grid">
+    <div class="svc"><div class="ic">🚚</div><b>บริการนำเข้าสินค้าจากจีน</b><p>ทางรถ 5-8 วัน / ทางเรือ 12-18 วัน<br>ราคาไม่มีขั้นต่ำ</p></div>
+    <div class="svc"><div class="ic">🛒</div><b>บริการสั่งซื้อ (พรีออเดอร์)</b><p>สั่งจาก Taobao · Tmall · 1688 หรือเว็บอื่นๆ</p></div>
+    <div class="svc"><div class="ic">💬</div><b>บริการประสานโรงงาน</b><p>ติดต่อประสานงานกับโรงงาน<br>จนสินค้าถึงมือลูกค้า</p></div>
+    <div class="svc"><div class="ic">💳</div><b>บริการด้านการเงิน</b><p>เติมเงิน Alipay ชำระสินค้าทาง Taobao / 1688</p></div>
+  </div>
+</section>
+
+<section class="rates" id="rates">
+  <h2>อัตราค่าบริการ</h2>
+  <p class="lead2">ลูกค้าธุรกิจหรือลูกค้าที่นำเข้าจำนวนมาก สามารถติดต่อขอเรทพิเศษได้</p>
+
+  <div class="rate-city">🏙 เมืองกว่างโจว (Guangzhou)</div>
+  <div class="rate-mode">นำเข้าสินค้าทางรถ</div>
+  <div class="rate-grid">
+    <div class="rate-card"><h4>อัตราค่านำเข้าคิดตามน้ำหนัก (kg)</h4><table><thead><tr><th>ประเภทสินค้า</th><th>น้อยกว่า 200 kg</th><th>มากกว่า 200 kg</th><th>มากกว่า 800 kg</th></tr></thead><tbody><tr><td>ทั่วไป</td><td>28</td><td>25</td><td>19</td></tr><tr><td>มอก.</td><td>38</td><td>35</td><td>23</td></tr></tbody></table></div>
+    <div class="rate-card"><h4>อัตราค่านำเข้าคิดตามปริมาตร (CBM)</h4><table><thead><tr><th>ประเภทสินค้า</th><th>น้อยกว่า 1 CBM</th><th>มากกว่า 1 CBM</th><th>มากกว่า 5 CBM</th></tr></thead><tbody><tr><td>ทั่วไป</td><td>6,800</td><td>6,500</td><td>5,800</td></tr><tr><td>มอก.</td><td>7,300</td><td>7,000</td><td>6,300</td></tr></tbody></table></div>
+  </div>
+  <div class="rate-mode">นำเข้าสินค้าทางเรือ</div>
+  <div class="rate-grid">
+    <div class="rate-card"><h4>อัตราค่านำเข้าคิดตามน้ำหนัก (kg)</h4><table><thead><tr><th>ประเภทสินค้า</th><th>น้อยกว่า 200 kg</th><th>มากกว่า 200 kg</th><th>มากกว่า 800 kg</th></tr></thead><tbody><tr><td>ทั่วไป</td><td>22</td><td>19</td><td>18</td></tr><tr><td>มอก.</td><td>25</td><td>22</td><td>19</td></tr></tbody></table></div>
+    <div class="rate-card"><h4>อัตราค่านำเข้าคิดตามปริมาตร (CBM)</h4><table><thead><tr><th>ประเภทสินค้า</th><th>น้อยกว่า 1 CBM</th><th>มากกว่า 1 CBM</th><th>มากกว่า 5 CBM</th></tr></thead><tbody><tr><td>ทั่วไป</td><td>4,500</td><td>4,000</td><td>3,700</td></tr><tr><td>มอก.</td><td>4,900</td><td>4,500</td><td>4,000</td></tr></tbody></table></div>
+  </div>
+
+  <div class="rate-city">🏙 เมืองอี้อู (Yiwu)</div>
+  <div class="rate-mode">นำเข้าสินค้าทางรถ</div>
+  <div class="rate-grid">
+    <div class="rate-card"><h4>อัตราค่านำเข้าคิดตามน้ำหนัก (kg)</h4><table><thead><tr><th>ประเภทสินค้า</th><th>น้อยกว่า 200 kg</th><th>มากกว่า 200 kg</th><th>มากกว่า 800 kg</th></tr></thead><tbody><tr><td>ทั่วไป</td><td>30</td><td>27</td><td>25</td></tr><tr><td>มอก.</td><td>40</td><td>37</td><td>27</td></tr></tbody></table></div>
+    <div class="rate-card"><h4>อัตราค่านำเข้าคิดตามปริมาตร (CBM)</h4><table><thead><tr><th>ประเภทสินค้า</th><th>น้อยกว่า 1 CBM</th><th>มากกว่า 1 CBM</th><th>มากกว่า 5 CBM</th></tr></thead><tbody><tr><td>ทั่วไป</td><td>7,000</td><td>6,800</td><td>6,300</td></tr><tr><td>มอก.</td><td>7,500</td><td>7,300</td><td>6,800</td></tr></tbody></table></div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <h3>พร้อมเริ่มสั่งซื้อสินค้าจากจีน?</h3>
+  <p>สมัครสมาชิกฟรี · เช็คราคา + ค่าส่ง ก่อนตัดสินใจได้ทันที</p>
+  <a href="/login.html">🔑 เข้าสู่ระบบ / สมัครสมาชิก</a>
+  <a class="line" href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener">💬 แอดไลน์ถามแอดมิน</a>
+</section>
+
+<footer id="contact">
+  <div class="fw">
+    <div style="flex:1;min-width:220px">
+      <h5>OVERSEA PENGATE</h5>
+      <p>บริการนำเข้าสินค้าจีน · Taobao / Tmall / 1688<br>ส่งถึงมือคุณทั่วประเทศไทย</p>
+    </div>
+    <div style="min-width:180px">
+      <h5>ติดต่อเรา</h5>
+      <p>☎ 095-760-6258</p>
+      <p>📧 overseapengate2@gmail.com</p>
+      <p><a href="https://line.me/R/ti/p/@overseapengate" target="_blank">💬 LINE @overseapengate</a></p>
+    </div>
+    <div style="min-width:180px">
+      <h5>เมนู</h5>
+      <p><a href="/">หน้าสั่งซื้อ</a></p>
+      <p><a href="/calc.html">คำนวณค่าส่ง</a></p>
+      <p><a href="/how-order.html">วิธีสั่งซื้อ</a></p>
+      <p><a href="/how-ship.html">วิธีส่งของเข้าโกดัง</a></p>
+    </div>
+    <div style="min-width:180px">
+      <h5>บัญชีของฉัน</h5>
+      <p><a href="/login.html">เข้าสู่ระบบ</a></p>
+      <p><a href="/#register">สมัครสมาชิก</a></p>
+      <p><a href="/delete-account.html">ขอลบบัญชี</a></p>
+      <p><a href="/privacy.html">นโยบายความเป็นส่วนตัว</a></p>
+    </div>
+  </div>
+  <div class="bot">© 2026 Oversea PenGate · All rights reserved</div>
+</footer>
+
+<script src="/i18n.js" defer></script>
+<script src="/line-fab.js" defer></script>
+</body>
+</html>
