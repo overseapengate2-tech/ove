@@ -151,12 +151,20 @@ function calcShipping(){
       คิดตาม: <b>${basis}</b> · ระยะเวลาขนส่งโดยประมาณ ${rate.days}<br>
       ${w>0 ? `น้ำหนัก ${w} กก. = ฿${Math.round(byKg).toLocaleString()}` : ''}${(w>0&&cbm>0)?' · ':''}${cbm>0 ? `ปริมาตร ${cbm.toFixed(3)} คิว = ฿${Math.round(byCbm).toLocaleString()}` : ''}
     </div>
-    <a class="cta" href="/index.html#order">→ พร้อมแล้ว เริ่มสั่งซื้อเลย</a>`;
+    <div style="background:linear-gradient(135deg,#FFF4D6,#FFE7A6);border:1px solid #FFCC66;border-radius:10px;padding:10px 12px;margin-top:14px;font-size:12.5px;color:#7a4d00;line-height:1.5">
+      🎁 <b>สอบถามราคาสินค้า+ค่าส่งจริง ฟรี!</b> แอดไลน์ทีมงานตอบภายใน 24 ชม.<br>
+      <span style="font-size:11.5px;color:#a05500">✨ แอดใหม่ รับส่วนลดค่าส่งครั้งแรก</span>
+    </div>
+    <a href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#06C755;color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 4px 14px rgba(6,199,85,.35);min-width:240px">
+      💬 แอดไลน์ถามราคาสินค้า+ค่าส่ง
+    </a>
+    <div style="margin-top:10px"><a class="cta" href="/index.html#order">→ พร้อมแล้ว เริ่มสั่งซื้อเลย</a></div>`;
 }
 
 $('#calcBtn').addEventListener('click', calcShipping);
 $('#calcRates').textContent = '* ราคาโดยประมาณ ไม่รวมค่าสินค้าและค่าบริการสั่งซื้อ — ราคาจริงทีมงานจะแจ้งอีกครั้งหลังตรวจสอบ';
 </script>
 <script src="/i18n.js" defer></script>
+<script src="/line-fab.js" defer></script>
 </body>
 </html>
