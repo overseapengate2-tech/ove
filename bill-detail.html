@@ -289,6 +289,21 @@ function render(d){
         <div style="font-weight:700;color:var(--brand-700);margin-bottom:12px">สรุปยอดเงิน</div>
         <div class="summary">
           ${summary}
+          ${(d.billStatus!=='PAID'&&d.billStatus!=='SHIPPED'&&d.billStatus!=='DELIVERED')?`
+          <div id="couponBox" style="background:linear-gradient(135deg,#FFF9E6,#FFF0C0);border:1.5px dashed #E5B84D;border-radius:10px;padding:12px;margin:10px 0">
+            ${d.couponCode?`
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <div style="font-size:13px;color:#7a4d00"><b>🎁 รหัสส่วนลด: ${esc(d.couponCode)}</b><br><span style="color:#a05500">ลด ${fmt(d.couponAmount||0)} ฿</span></div>
+                <span style="color:#16a34a;font-weight:700;font-size:12px">✓ ใช้แล้ว</span>
+              </div>`:`
+              <div style="font-size:13px;font-weight:700;color:#7a4d00;margin-bottom:8px">🎁 มีรหัสส่วนลด?</div>
+              <div style="display:flex;gap:6px">
+                <input id="couponInput" type="text" placeholder="ใส่รหัสส่วนลด" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;text-transform:uppercase" maxlength="32"/>
+                <button id="couponApply" type="button" style="background:#7C6739;color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">ใช้โค้ด</button>
+              </div>
+              <div id="couponMsg" style="margin-top:6px;font-size:12px"></div>`}
+          </div>`:''}
+
           <div class="r total"><span class="k">ยอดชำระ</span><span class="v">${fmt(grand)} ฿</span></div>
         </div>
         ${confirmBtnHtml(d)}
@@ -343,6 +358,8 @@ function render(d){
     </div>`;
 
   const cb=$('#confirmBill'); if(cb) cb.addEventListener('click',()=>confirmBill(d));
+  const cApply=$('#couponApply'); if(cApply) cApply.addEventListener('click',applyCoupon);
+  const cInp=$('#couponInput'); if(cInp) cInp.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); applyCoupon(); }});
   wireAddress();
   wireDelivery();
   wireSlip(d);
@@ -446,6 +463,23 @@ async function commitAddr(a, saveToBook){
     load();  /* โหลดบิลใหม่ให้เห็นที่อยู่ */
   }catch(e){ alert('❌ '+e.message); if(btn){ btn.disabled=false; btn.textContent='💾 บันทึกที่อยู่'; } }
 }
+async function applyCoupon(){
+  const inp=document.getElementById('couponInput'); const msg=document.getElementById('couponMsg'); const btn=document.getElementById('couponApply');
+  if(!inp||!msg||!btn) return;
+  const code=(inp.value||'').trim().toUpperCase();
+  if(!code){ msg.style.color='#dc2626'; msg.textContent='กรุณาใส่รหัส'; return; }
+  btn.disabled=true; const oldT=btn.textContent; btn.textContent='กำลังตรวจสอบ…'; msg.style.color='#7a4d00'; msg.textContent='';
+  try{
+    const email=(order&&order.customer&&order.customer.email)||'';
+    const r=await fetch('/api/coupons?action=redeem',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ code, orderNo:no, email }) });
+    const d=await r.json();
+    if(!d.ok) throw new Error(d.error||'ใช้รหัสไม่สำเร็จ');
+    msg.style.color='#16a34a'; msg.textContent='✅ ใช้รหัสสำเร็จ ลด '+d.amount+' บาท';
+    setTimeout(()=>load(), 700);
+  }catch(e){ msg.style.color='#dc2626'; msg.textContent='❌ '+e.message; btn.disabled=false; btn.textContent=oldT; }
+}
+
+
 load();
 </script>
 <script src="/i18n.js" defer></script>
