@@ -2221,7 +2221,7 @@ function setLoggedOut(){
 /* ออกจากระบบจริง (กดปุ่ม "ออก") — ล้างบัญชีถาวร */
 function doLogout(){
   localStorage.removeItem('opg_user');
-  setLoggedOut();
+  location.href = '/';
 }
 
 function showLoginHelp(msg){ $('#loginHelp').textContent = msg; }
