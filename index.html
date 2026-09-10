@@ -156,6 +156,45 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
   </div>
 </section>
 
+<!-- ═══════ CALC (embedded in landing) ═══════ -->
+<section class="rates" id="calc-section" style="padding-top:20px">
+  <div style="max-width:720px;margin:0 auto;padding:0 24px 40px">
+    <div style="background:#fff;border-radius:20px;padding:32px 28px;box-shadow:0 12px 40px rgba(0,0,0,.08)">
+      <div style="text-align:center;margin-bottom:22px">
+        <div style="display:inline-block;font-size:13px;font-weight:700;letter-spacing:1px;color:#7C6739;background:#F6F0E1;border:1px solid #E7DBC0;border-radius:999px;padding:5px 16px;margin-bottom:12px">คำนวณค่าส่ง</div>
+        <h3 style="font-family:'Playfair Display',serif;font-weight:800;font-size:28px;color:#3C2A0E;margin-bottom:6px">ประเมินค่าขนส่งเบื้องต้น</h3>
+        <p style="font-size:13.5px;color:#5C4820;line-height:1.6">ใส่น้ำหนักและขนาดกล่อง ระบบจะประเมินค่าขนส่งจากจีนให้ทันที</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#5C4820;margin-bottom:6px">น้ำหนักรวม (กก.)</label>
+          <input id="lcWeight" type="number" min="0" step="0.1" placeholder="เช่น 5" style="width:100%;padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#5C4820;margin-bottom:6px">ขนส่งโดย</label>
+          <select id="lcMode" style="width:100%;padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none">
+            <option value="truck">🚚 ทางรถ (เร็วกว่า)</option>
+            <option value="sea">🚢 ทางเรือ (ถูกกว่า)</option>
+          </select>
+        </div>
+      </div>
+      <label style="display:block;font-size:13px;font-weight:600;color:#5C4820;margin-bottom:6px">ขนาดกล่อง (ซม.) — กว้าง × ยาว × สูง <span style="font-weight:400;color:#8F7A55">(ถ้าทราบ)</span></label>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:center;margin-bottom:16px">
+        <input id="lcW" type="number" min="0" placeholder="กว้าง" style="padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
+        <span style="color:#8F7A55">×</span>
+        <input id="lcL" type="number" min="0" placeholder="ยาว" style="padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
+        <span style="color:#8F7A55">×</span>
+        <input id="lcH" type="number" min="0" placeholder="สูง" style="padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
+      </div>
+      <button id="lcBtn" type="button" style="width:100%;background:#7C6739;color:#fff;border:0;border-radius:999px;padding:14px 22px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;box-shadow:0 6px 18px rgba(124,103,57,.28)">🧮 คำนวณค่าส่ง</button>
+      <div id="lcResult" style="display:none;margin-top:18px;text-align:center;background:#F6F0E1;border:1.5px dashed #E7DBC0;border-radius:16px;padding:18px"></div>
+      <p style="text-align:center;font-size:12px;color:#8F7A55;margin-top:14px">* ราคาโดยประมาณ ไม่รวมค่าสินค้าและค่าบริการสั่งซื้อ — ราคาจริงทีมงานจะแจ้งอีกครั้งหลังตรวจสอบ</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CTA ═══════ -->
 <section class="cta-band">
   <h3>พร้อมเริ่มสั่งซื้อสินค้าจากจีน?</h3>
   <p>สมัครสมาชิกฟรี · เช็คราคา + ค่าส่ง ก่อนตัดสินใจได้ทันที</p>
@@ -195,5 +234,31 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
 
 <script src="/i18n.js" defer></script>
 <script src="/line-fab.js" defer></script>
+
+<script>
+(function(){
+  const $=(s)=>document.querySelector(s);
+  const RATES={truck:{kg:45,cbm:7500,label:'ทางรถ',days:'5–8 วัน'},sea:{kg:28,cbm:4800,label:'ทางเรือ',days:'12–18 วัน'}};
+  const MIN=100;
+  $('#lcBtn')?.addEventListener('click',()=>{
+    const w=parseFloat($('#lcWeight').value)||0;
+    const cw=parseFloat($('#lcW').value)||0, cl=parseFloat($('#lcL').value)||0, ch=parseFloat($('#lcH').value)||0;
+    const rate=RATES[$('#lcMode').value]||RATES.truck;
+    const cbm=(cw*cl*ch)/1000000;
+    const res=$('#lcResult');
+    res.style.display='block';
+    if(w<=0&&cbm<=0){ res.innerHTML='<div style="font-size:13px;color:#7C6739;font-weight:600">กรุณาใส่น้ำหนัก หรือขนาดกล่องอย่างน้อย 1 อย่าง</div>'; return; }
+    const byKg=w*rate.kg, byCbm=cbm*rate.cbm;
+    const price=Math.round(Math.max(byKg,byCbm,MIN));
+    const basis=byCbm>byKg?'ปริมาตร (คิว)':'น้ำหนัก';
+    res.innerHTML=`
+      <div style="font-size:13px;color:#7C715B;margin-bottom:6px">ค่าขนส่ง${rate.label}โดยประมาณ</div>
+      <div style="font-family:'Playfair Display',serif;font-weight:800;font-size:38px;color:#63522C;line-height:1">฿${price.toLocaleString()}</div>
+      <div style="font-size:12.5px;color:#7C715B;margin-top:10px;line-height:1.7">คิดตาม: <b>${basis}</b> · ${rate.days}<br>
+        ${w>0?`น้ำหนัก ${w} กก. = ฿${Math.round(byKg).toLocaleString()}`:''}${(w>0&&cbm>0)?' · ':''}${cbm>0?`ปริมาตร ${cbm.toFixed(3)} คิว = ฿${Math.round(byCbm).toLocaleString()}`:''}</div>
+      <a href="/app.html#order" style="display:inline-block;margin-top:14px;color:#7C6739;font-weight:700;font-size:14px;text-decoration:none">→ พร้อมแล้ว เริ่มสั่งซื้อเลย</a>`;
+  });
+})();
+</script>
 </body>
 </html>
