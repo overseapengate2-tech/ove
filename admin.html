@@ -1854,7 +1854,7 @@ async function loadCoupons(){
   const wrap = $('couponsList');
   wrap.innerHTML = '<div class="loading"><div class="spinner"></div> กำลังโหลด…</div>';
   try{
-    const r = await fetch(`${API_BASE}/api/coupons`, { headers:{ 'x-admin-key': adminKey } });
+    const r = await fetch(`${API_BASE}/api/reviews?resource=coupon`, { headers:{ 'x-admin-key': adminKey } });
     const d = await r.json();
     if(!d.ok) throw new Error(d.error||'error');
     if(!d.coupons.length){ wrap.innerHTML = '<div class="empty" style="padding:30px;text-align:center;color:#888">ยังไม่มีโค้ด</div>'; return; }
@@ -1878,7 +1878,7 @@ async function createCoupon(){
   if(!code || amount<=0){ msg.style.color='#dc2626'; msg.textContent='ใส่รหัสและจำนวนเงินก่อน'; return; }
   msg.style.color='#666'; msg.textContent='กำลังสร้าง…';
   try{
-    const r = await fetch(`${API_BASE}/api/coupons`, { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey}, body:JSON.stringify({ code, amount, note }) });
+    const r = await fetch(`${API_BASE}/api/reviews?resource=coupon`, { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey}, body:JSON.stringify({ code, amount, note }) });
     const d = await r.json();
     if(!d.ok) throw new Error(d.error||'error');
     msg.style.color='#16a34a'; msg.textContent='✅ สร้างสำเร็จ';
@@ -1889,7 +1889,7 @@ async function createCoupon(){
 async function deleteCoupon(code){
   if(!confirm(`ลบโค้ด ${code}?`)) return;
   try{
-    const r = await fetch(`${API_BASE}/api/coupons?code=${encodeURIComponent(code)}`, { method:'DELETE', headers:{ 'x-admin-key': adminKey } });
+    const r = await fetch(`${API_BASE}/api/reviews?resource=coupon&code=${encodeURIComponent(code)}`, { method:'DELETE', headers:{ 'x-admin-key': adminKey } });
     const d = await r.json();
     if(!d.ok) throw new Error(d.error||'error');
     await loadCoupons();

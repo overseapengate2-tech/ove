@@ -9,6 +9,7 @@
 import { getUserAddresses, addUserAddress, deleteUserAddress, saveUserProfile, getAccount, saveAccount, addKnownUser, listAccounts, resetAllVerifications, bindEmailToId, getIdByEmail, saveOtp, getOtp, delOtp, otpRateLimited, markOtpSent, saveAccountImage, getAccountImage, resetAllCredits, nextMemberCode, backfillMemberCodes, saveOcrCache, getOcrCache, delOcrCache } from '../lib/redis.js';
 import { sendSMS, normalizePhone, makeOtp, requestOtp, verifyOtp } from '../lib/tbs.js';
 import { ocrThaiIdFront, validThaiId as validThaiIdChecksum } from '../lib/iapp.js';
+import { isAdminReq } from '../lib/auth.js';
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto';
 
 /* Password hashing — Node built-in scrypt (ไม่ต้องพึ่ง lib ภายนอก) */
@@ -32,9 +33,6 @@ function safeAccount(a) {
   const { passwordHash, ...rest } = a;
   return rest;
 }
-
-const ADMIN_KEY_ENV = () => (process.env.ADMIN_SECRET_KEY || 'changeme').trim();
-const isAdminReq = (req) => String(req.headers['x-admin-key'] || '').trim() === ADMIN_KEY_ENV();
 
 /* เลขบัตรประชาชนไทย 13 หลัก — ตรวจ checksum ตามสูตร mod 11 */
 function validThaiId(id) {

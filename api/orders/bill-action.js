@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     if (!order.customer?.address?.detail) return res.status(400).json({ ok: false, error: 'กรุณาระบุที่อยู่จัดส่งก่อน' });
     if (!order.deliveryChosen)            return res.status(400).json({ ok: false, error: 'กรุณาเลือกวิธีจัดส่งก่อน' });
     const updated = await updateOrder(no, { billStatus: 'REVIEW', billConfirmedAt: new Date().toISOString() });
-    try { await addBillHistory(no, { action: 'แจ้งวางบิล (เลือกการจัดส่ง)', note: 'ลูกค้า · ' + (order.deliveryCarrier || order.deliveryType || '') }); } catch (e) {}
+    try { await addBillHistory(no, { action: 'แจ้งวางบิล (เลือกการจัดส่ง)', note: 'ลูกค้า · ' + (order.deliveryCarrier || order.deliveryType || '') }); } catch (e) { console.error('[bill-action]', e); }
     return res.status(200).json({ ok: true, order: updated });
   }
 
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     if (s.length > 2_000_000)         return res.status(400).json({ ok: false, error: 'รูปใหญ่เกินไป กรุณาลองใหม่' });
     const updated = await updateOrder(no, { slipImage: s, slipSubmittedAt: new Date().toISOString(), billStatus: 'SLIP' });
     const g = (o => { const n=k=>Number(o[k])||0; const sub=n('shipping')+n('cnShipFee')+n('sackFee')+n('crateFee')+n('qcFee')+n('billFee')-n('discount'); return sub-sub*(n('taxPct')/100); })(updated);
-    try { await addBillHistory(no, { action: 'ลูกค้าแจ้งชำระเงิน', note: `ยอด ${g.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} ฿ · ${updated.deliveryCarrier||updated.deliveryType||''}`.trim() }); } catch (e) {}
+    try { await addBillHistory(no, { action: 'ลูกค้าแจ้งชำระเงิน', note: `ยอด ${g.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} ฿ · ${updated.deliveryCarrier||updated.deliveryType||''}`.trim() }); } catch (e) { console.error('[bill-action]', e); }
     return res.status(200).json({ ok: true, order: updated });
   }
 

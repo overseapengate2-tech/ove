@@ -6,6 +6,7 @@
 
 import { saveOrder, listOrders, countOrders, nextOrderNo, nextPayNo, getOrder, deleteOrder, getRmbRate, setRmbRate, getPayRate, setPayRate, updateOrder } from '../../lib/redis.js';
 import { registerTracking } from '../../lib/seventrack.js';
+import { isAdminReq } from '../../lib/auth.js';
 
 function randomOrderNo() {
   const d = new Date();
@@ -15,8 +16,6 @@ function randomOrderNo() {
   for (let i = 0; i < 4; i++) r += chars[Math.floor(Math.random() * chars.length)];
   return `OP${String(d.getFullYear()).slice(2)}${p(d.getMonth() + 1)}${p(d.getDate())}-${r}`;
 }
-
-const ADMIN_KEY = (process.env.ADMIN_SECRET_KEY || 'changeme').trim();
 
 /* จัดการออเดอร์ฝากจ่ายเงิน (OVE) อัตโนมัติ:
    - QUOTED (แจ้งราคาแล้ว) ไม่ชำระเกิน 24 ชม. → ยกเลิก
@@ -41,7 +40,7 @@ async function expireQuotedPayOrders() {
         deleted++;
       }
     }
-  } catch (e) {}
+  } catch (e) { console.error('[orders]', e); }
   return { cancelled, deleted };
 }
 
@@ -70,7 +69,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, rate, payRate });
     }
     if (req.method === 'POST') {
-      if (String(req.headers['x-admin-key'] || '').trim() !== ADMIN_KEY) {
+      if (!isAdminReq(req)) {
         return res.status(401).json({ ok: false, error: 'Unauthorized' });
       }
       const out = {};
@@ -88,7 +87,7 @@ export default async function handler(req, res) {
 
   /* ── GET: แอดมินดึงรายการออเดอร์ ── */
   if (req.method === 'GET') {
-    if (String(req.headers['x-admin-key'] || '').trim() !== ADMIN_KEY) {
+    if (!isAdminReq(req)) {
       return res.status(401).json({ ok: false, error: 'Unauthorized' });
     }
     /* ทุกครั้งที่แอดมินโหลดรายการ → เช็ค+ยกเลิกออเดอร์ค้างชำระเกิน 1 วันก่อน */
@@ -106,7 +105,7 @@ export default async function handler(req, res) {
 
   /* ── DELETE: แอดมินลบออเดอร์ ── */
   if (req.method === 'DELETE') {
-    if (String(req.headers['x-admin-key'] || '').trim() !== ADMIN_KEY) {
+    if (!isAdminReq(req)) {
       return res.status(401).json({ ok: false, error: 'Unauthorized' });
     }
     const no = String(req.query.no || '').trim().toUpperCase();
@@ -189,7 +188,7 @@ export default async function handler(req, res) {
     await saveOrder(order);
 
     /* ลงทะเบียนเลข Tracking กับ 17track ทันที (ออเดอร์นำเข้ามีเลขแทร็คมาตั้งแต่สร้าง) */
-    if (order.trackingNo) { try { await registerTracking(order.trackingNo); } catch (e) {} }
+    if (order.trackingNo) { try { await registerTracking(order.trackingNo); } catch (e) { console.error('[orders]', e); } }
 
     /* ส่งข้อมูลออเดอร์เข้า Google Sheet (ถ้าตั้ง GSHEET_URL) — ยกเว้นออเดอร์ฝากจ่ายเงิน (OVE) ไม่เก็บลงชีต */
     const GSHEET_URL = (process.env.GSHEET_URL || '').trim();
@@ -213,7 +212,7 @@ export default async function handler(req, res) {
             items: order.items.map(it => ({ shop: it.shop, url: it.url, note: it.note, imageUrl: it.imageUrl || '' })),
           }),
         });
-      } catch (e) {}
+      } catch (e) { console.error('[orders]', e); }
     }
 
     return res.status(200).json({ ok: true, orderNo: no });

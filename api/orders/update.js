@@ -8,10 +8,10 @@
 import { updateOrder, addTrackingEvent, getOrder, addBillHistory } from '../../lib/redis.js';
 import { registerTracking } from '../../lib/seventrack.js';
 import { sendBillEmail, sendShipEmail, sendQuoteEmail } from '../../lib/email.js';
+import { isAdminReq } from '../../lib/auth.js';
 
 const VALID_STATUSES = ['NEW','QUOTED','PAID','ORDERED','SHIPPED','DONE','CANCELLED'];
 const SHIP_STEPS = ['PENDING','CN_WH','CN_OUT','TH_IN','TH_WH','DELIVERING','DELIVERED'];
-const ADMIN_KEY = (process.env.ADMIN_SECRET_KEY || 'changeme').trim();
 
 const STATUS_TEXT = {
   NEW:       'กำลังตรวจสอบ',
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   }
 
   /* auth */
-  if (String(req.headers['x-admin-key'] || '').trim() !== ADMIN_KEY) {
+  if (!isAdminReq(req)) {
     return res.status(401).json({ ok: false, error: 'Unauthorized' });
   }
 
@@ -166,16 +166,16 @@ export default async function handler(req, res) {
   if (!updated) return res.status(404).json({ ok: false, error: 'ไม่พบออเดอร์นี้' });
 
   /* ลงทะเบียนเลข Tracking จีนกับ 17track อัตโนมัติ (เพื่อให้ระบบดึงสถานะสดได้) */
-  if (patch.trackingNo) { try { await registerTracking(patch.trackingNo); } catch (e) {} }
+  if (patch.trackingNo) { try { await registerTracking(patch.trackingNo); } catch (e) { console.error('[orders/update]', e); } }
 
   /* ฝากจ่ายเงิน (OVE): แอดมินกดแจ้งราคา/บันทึกซ้ำขณะ "รอชำระเงิน" (QUOTED) → ส่งอีเมลแจ้งราคาให้ลูกค้า (กดบันทึกซ้ำ = ส่งใหม่) */
   if (patch.status === 'QUOTED' && updated.source === 'pay') {
-    try { await sendQuoteEmail(updated); } catch (e) {}
+    try { await sendQuoteEmail(updated); } catch (e) { console.error('[orders/update]', e); }
   }
   /* แอดมินยืนยันค่าบริการ → "รอชำระเงิน" → ส่งอีเมลแจ้งยอดบิลให้ลูกค้า */
-  if (patch.billStatus === 'AWAIT_PAY') { try { await sendBillEmail(updated); } catch (e) {} }
+  if (patch.billStatus === 'AWAIT_PAY') { try { await sendBillEmail(updated); } catch (e) { console.error('[orders/update]', e); } }
   /* แอดมินใส่เลขขนส่งไทย → "จัดส่งแล้ว" → ส่งอีเมลแจ้งเลขแทร็คให้ลูกค้า */
-  if (patch.billStatus === 'SHIPPED') { try { await sendShipEmail(updated); } catch (e) {} }
+  if (patch.billStatus === 'SHIPPED') { try { await sendShipEmail(updated); } catch (e) { console.error('[orders/update]', e); } }
 
   /* ── บันทึกประวัติบิล ── */
   try {
@@ -188,7 +188,7 @@ export default async function handler(req, res) {
     else if (patch.billStatus === 'DELIVERED') h = { action: 'เจ้าหน้าที่ จัดส่งของเรียบร้อย', note: baht(g) };
     else if (billFee !== undefined || req.body?.cnShipFee !== undefined || shipping !== undefined) h = { action: 'แก้ไขค่าบริการในบิล', note: 'เจ้าหน้าที่ · ' + baht(g) };
     if (h) await addBillHistory(no, h);
-  } catch (e) {}
+  } catch (e) { console.error('[orders/update]', e); }
 
   return res.status(200).json({ ok: true, order: updated });
 }

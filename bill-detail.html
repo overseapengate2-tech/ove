@@ -471,7 +471,7 @@ async function applyCoupon(){
   btn.disabled=true; const oldT=btn.textContent; btn.textContent='กำลังตรวจสอบ…'; msg.style.color='#7a4d00'; msg.textContent='';
   try{
     const email=(order&&order.customer&&order.customer.email)||'';
-    const r=await fetch('/api/coupons?action=redeem',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ code, orderNo:no, email }) });
+    const r=await fetch('/api/reviews?resource=coupon&action=redeem',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ code, orderNo:no, email }) });
     const d=await r.json();
     if(!d.ok) throw new Error(d.error||'ใช้รหัสไม่สำเร็จ');
     msg.style.color='#16a34a'; msg.textContent='✅ ใช้รหัสสำเร็จ ลด '+d.amount+' บาท';

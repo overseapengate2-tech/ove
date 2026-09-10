@@ -54,7 +54,7 @@ export default async function handler(req, res) {
   const updated = await updateOrder(no, { customer });
 
   /* บันทึกเข้าสมุดที่อยู่ของผู้ใช้ด้วย (ถ้าระบุ) */
-  if (saveToBook) { try { await addUserAddress(e, addr); } catch (err) {} }
+  if (saveToBook) { try { await addUserAddress(e, addr); } catch (err) { console.error('[set-address]', err); } }
 
   return res.status(200).json({ ok: true, address: addr, order: updated });
 }

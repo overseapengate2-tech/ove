@@ -8,8 +8,7 @@
 
 import { createHash } from 'crypto';
 import { addTopup, getTopup, updateTopup, deleteTopup, listTopups, getUserCredit, addUserCredit, deductCredit, slipSeen, markSlip, unmarkSlip, addKnownUser } from '../lib/redis.js';
-
-const ADMIN_KEY = (process.env.ADMIN_SECRET_KEY || 'changeme').trim();
+import { isAdminReq } from '../lib/auth.js';
 const MAX_IMG = 800 * 1024;
 
 export default async function handler(req, res) {
@@ -17,7 +16,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     if (req.query.admin) {
-      if (String(req.headers['x-admin-key'] || '').trim() !== ADMIN_KEY) {
+      if (!isAdminReq(req)) {
         return res.status(401).json({ ok: false, error: 'Unauthorized' });
       }
       const list = await listTopups();
@@ -65,7 +64,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'PATCH') {
-    if (String(req.headers['x-admin-key'] || '').trim() !== ADMIN_KEY) {
+    if (!isAdminReq(req)) {
       return res.status(401).json({ ok: false, error: 'Unauthorized' });
     }
     const id = String(req.query.id || '').trim();
@@ -93,7 +92,7 @@ export default async function handler(req, res) {
     const id = String(req.query.id || '').trim();
     const t = await getTopup(id);
     if (!t) return res.status(404).json({ ok: false, error: 'ไม่พบรายการ' });
-    const isAdmin = String(req.headers['x-admin-key'] || '').trim() === ADMIN_KEY;
+    const isAdmin = isAdminReq(req);
     const email = (req.query.email || '').trim().toLowerCase();
     if (!isAdmin && email !== (t.email || '').toLowerCase()) {
       return res.status(403).json({ ok: false, error: 'ลบได้เฉพาะรายการของตนเอง' });
