@@ -180,12 +180,12 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
         </div>
       </div>
       <label style="display:block;font-size:13px;font-weight:600;color:#5C4820;margin-bottom:6px">ขนาดกล่อง (ซม.) — กว้าง × ยาว × สูง <span style="font-weight:400;color:#8F7A55">(ถ้าทราบ)</span></label>
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:center;margin-bottom:16px">
-        <input id="lcW" type="number" min="0" placeholder="กว้าง" style="padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px">
+        <input id="lcW" type="number" min="0" placeholder="กว้าง" style="flex:1;min-width:0;padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
         <span style="color:#8F7A55">×</span>
-        <input id="lcL" type="number" min="0" placeholder="ยาว" style="padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
+        <input id="lcL" type="number" min="0" placeholder="ยาว" style="flex:1;min-width:0;padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
         <span style="color:#8F7A55">×</span>
-        <input id="lcH" type="number" min="0" placeholder="สูง" style="padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
+        <input id="lcH" type="number" min="0" placeholder="สูง" style="flex:1;min-width:0;padding:11px 14px;border:1.5px solid #ECE2CE;border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none;text-align:center"/>
       </div>
       <button id="lcBtn" type="button" style="width:100%;background:#7C6739;color:#fff;border:0;border-radius:999px;padding:14px 22px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;box-shadow:0 6px 18px rgba(124,103,57,.28)">🧮 คำนวณค่าส่ง</button>
       <div id="lcResult" style="display:none;margin-top:18px;text-align:center;background:#F6F0E1;border:1.5px dashed #E7DBC0;border-radius:16px;padding:18px"></div>
