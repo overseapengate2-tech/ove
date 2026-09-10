@@ -111,7 +111,7 @@ const HEAD=`<thead><tr>
   <th>ราคาสุทธิ (THB)</th><th>ส่วนลด (THB)</th><th>ยอดชำระ (THB)</th><th>สถานะ</th><th>จัดการ</th></tr></thead>`;
 
 async function load(){
-  if(!me||!me.email){ $('#listBody').innerHTML=`<div class="empty">กรุณาเข้าสู่ระบบก่อน<br><a href="/#order" class="btn">เข้าสู่ระบบ</a></div>`; return; }
+  if(!me||!me.email){ $('#listBody').innerHTML=`<div class="empty">กรุณาเข้าสู่ระบบก่อน<br><a href="/login.html" class="btn">เข้าสู่ระบบ</a></div>`; return; }
   await loadRate();
   let orders=[];
   try{

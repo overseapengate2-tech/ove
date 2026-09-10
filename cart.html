@@ -300,7 +300,7 @@ async function submitOrder(){
   const cart = getCart();
   if(!cart.length){ toast('ตะกร้าว่าง'); return; }
   const user = JSON.parse(localStorage.getItem('opg_user')||'null');
-  if(!user || !user.email){ toast('กรุณาเข้าสู่ระบบก่อน'); setTimeout(()=>location.href='/#order',1200); return; }
+  if(!user || !user.email){ toast('กรุณาเข้าสู่ระบบก่อน'); setTimeout(()=>location.href='/login.html',1200); return; }
   const lineId = localStorage.getItem('opg_lineId')||'';
   if(!lineId){ toast('กรุณากรอก LINE ID ที่หน้าสั่งซื้อ'); setTimeout(()=>location.href='/#order',1200); return; }
 

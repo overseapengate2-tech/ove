@@ -156,7 +156,7 @@ const STAT_CARDS=[
 async function load(){
   const user = JSON.parse(localStorage.getItem('opg_user')||'null');
   if(!user || !user.email){
-    $('#listBody').innerHTML=`<div class="empty">กรุณาเข้าสู่ระบบก่อน<br><a href="/#order" class="btn" style="margin-top:14px">ไปหน้าเข้าสู่ระบบ</a></div>`;
+    $('#listBody').innerHTML=`<div class="empty">กรุณาเข้าสู่ระบบก่อน<br><a href="/login.html" class="btn" style="margin-top:14px">ไปหน้าเข้าสู่ระบบ</a></div>`;
     $('#stats').innerHTML=STAT_CARDS.map(c=>`<div class="stat"><div class="n">0</div><div class="l">${c.l}</div><div class="ic">${c.ic}</div></div>`).join('');
     return;
   }

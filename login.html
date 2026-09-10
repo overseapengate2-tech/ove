@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>เข้าสู่ระบบ · Oversea PenGate</title>
+<meta name="description" content="เข้าสู่ระบบ Oversea PenGate — บริการนำเข้าสินค้าจากจีน"/>
+<link rel="icon" href="/logo.png?v=2"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#9C8654;--brand-600:#7C6739;--brand-700:#63522C;--brand-50:#F6F0E1;--brand-100:#E7DBC0;--ink:#3C3526;--ink-soft:#7C715B;--bg:#FAF6EE;--border:#ECE2CE;--err:#b3392f;--ok:#1a7f37}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:linear-gradient(180deg,var(--bg),var(--brand-50));color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+.top{background:linear-gradient(90deg,#B89865,#9C8654);padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.top h1{font-family:'Playfair Display',serif;font-size:19px;color:#fff;flex:1}
+.top a{color:#fff;font-size:13px;text-decoration:none;background:rgba(255,255,255,.2);padding:7px 14px;border-radius:999px;font-weight:600}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 18px}
+.card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:36px 32px;max-width:440px;width:100%;box-shadow:0 12px 40px rgba(124,103,57,.15);text-align:center}
+.logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--brand-700);letter-spacing:3px;margin-bottom:4px}
+.tag{font-size:12px;color:var(--ink-soft);letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);margin-bottom:6px}
+.sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:22px;line-height:1.6}
+.field{text-align:left;margin-bottom:14px}
+.field label{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-bottom:5px}
+.field input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;color:var(--ink);background:#fff;outline:none;transition:.15s border-color}
+.field input:focus{border-color:var(--brand)}
+.btn{width:100%;border:0;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:13px 22px;border-radius:10px;transition:.15s all;line-height:1;margin-top:6px}
+.btn-primary{background:var(--brand-600);color:#fff;box-shadow:0 6px 18px rgba(124,103,57,.28)}
+.btn-primary:hover{background:var(--brand-700)}
+.btn-primary:disabled{opacity:.55;cursor:default}
+.help{margin-top:12px;font-size:13px;color:var(--err);min-height:18px}
+.links{margin-top:18px;font-size:13.5px;color:var(--ink-soft)}
+.links a{color:var(--brand-600);font-weight:700;text-decoration:none}
+.links a:hover{text-decoration:underline}
+.divider{display:flex;align-items:center;gap:12px;margin:22px 0 16px;color:var(--ink-soft);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.line-btn{width:100%;background:#06C755;color:#fff;padding:12px 18px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(6,199,85,.3)}
+.line-btn:hover{background:#05a548}
+</style>
+</head>
+<body>
+<div class="top">
+  <a href="/">← หน้าหลัก</a>
+  <h1>🔑 เข้าสู่ระบบ</h1>
+</div>
+<div class="wrap">
+  <div class="card">
+    <div class="logo">OVERSEA PENGATE</div>
+    <div class="tag">นำเข้าสินค้าจีน</div>
+    <h2>ยินดีต้อนรับกลับ</h2>
+    <p class="sub">กรอกอีเมล/เบอร์โทร และรหัสผ่านเพื่อเข้าสู่ระบบ</p>
+
+    <div class="field">
+      <label for="loginId">อีเมล หรือ เบอร์โทร</label>
+      <input id="loginId" type="text" autocomplete="username" placeholder="you@example.com หรือ 0812345678"/>
+    </div>
+    <div class="field">
+      <label for="loginPw">รหัสผ่าน</label>
+      <input id="loginPw" type="password" autocomplete="current-password" placeholder="••••••••"/>
+    </div>
+    <button class="btn btn-primary" id="loginSubmit" type="button">🔑 เข้าสู่ระบบ</button>
+    <div class="help" id="loginHelp"></div>
+
+    <div class="links">
+      ยังไม่มีบัญชี? <a href="/#register">สมัครสมาชิก</a><br>
+      <a href="/#forgot" style="font-size:12.5px;margin-top:6px;display:inline-block">ลืมรหัสผ่าน?</a>
+    </div>
+
+    <div class="divider">หรือ</div>
+    <a class="line-btn" href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener">💬 แอดไลน์คุยกับแอดมิน</a>
+  </div>
+</div>
+
+<script>
+const $=(s)=>document.querySelector(s);
+const qs=new URLSearchParams(location.search);
+const REDIRECT=qs.get('redirect')||'/';
+
+try{
+  const u=JSON.parse(localStorage.getItem('opg_user')||'null');
+  if(u&&u.email){ location.replace(REDIRECT); }
+}catch(e){}
+
+$('#loginId').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#loginPw').focus(); });
+$('#loginPw').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#loginSubmit').click(); });
+$('#loginSubmit').addEventListener('click', doLogin);
+
+async function doLogin(){
+  const identifier=$('#loginId').value.trim();
+  const password=$('#loginPw').value;
+  const help=$('#loginHelp'); help.textContent=''; help.style.color='var(--err)';
+  if(!identifier||!password){ help.textContent='กรุณากรอกอีเมล/เบอร์โทร และรหัสผ่าน'; return; }
+  const btn=$('#loginSubmit'); btn.disabled=true; const oldT=btn.textContent; btn.textContent='กำลังเข้าสู่ระบบ…';
+  try{
+    const r=await fetch('/api/address',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ login:{ identifier, password } }) });
+    const j=await r.json();
+    if(!j.ok) throw new Error(j.error||'เข้าสู่ระบบไม่สำเร็จ');
+    localStorage.setItem('opg_user', JSON.stringify(j.user));
+    help.style.color='var(--ok)'; help.textContent='✅ เข้าสู่ระบบสำเร็จ กำลังพาไปหน้าถัดไป…';
+    setTimeout(()=>location.replace(REDIRECT), 500);
+  }catch(err){ help.textContent=err.message||'เข้าสู่ระบบไม่สำเร็จ'; btn.disabled=false; btn.textContent=oldT; }
+}
+</script>
+<script src="/i18n.js" defer></script>
+<script src="/line-fab.js" defer></script>
+</body>
+</html>

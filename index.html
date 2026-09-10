@@ -2991,8 +2991,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 function openLoginModal(){ $('#loginModal').classList.add('open'); $('#loginModal').setAttribute('aria-hidden','false'); }
 function closeLoginModal(){ $('#loginModal').classList.remove('open'); $('#loginModal').setAttribute('aria-hidden','true'); }
-$('#loginBtn').addEventListener('click', ()=>{ switchAuthView('login'); openLoginModal(); });
-$('#gateLoginBtn')?.addEventListener('click', ()=>{ switchAuthView('login'); openLoginModal(); });
+$('#loginBtn').addEventListener('click', ()=>{ location.href='/login.html'; });
+$('#gateLoginBtn')?.addEventListener('click', ()=>{ location.href='/login.html?redirect=/%23order'; });
 $('#loginModalClose').addEventListener('click', closeLoginModal);
 $('#loginSkip').addEventListener('click', closeLoginModal);
 $('#loginModal').addEventListener('click', (e)=>{ if(e.target.id==='loginModal') closeLoginModal(); });
