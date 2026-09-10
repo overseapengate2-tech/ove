@@ -74,7 +74,7 @@ h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);ma
 <script>
 const $=(s)=>document.querySelector(s);
 const qs=new URLSearchParams(location.search);
-const REDIRECT=qs.get('redirect')||'/';
+const REDIRECT=qs.get('redirect')||'/app.html';
 
 try{
   const u=JSON.parse(localStorage.getItem('opg_user')||'null');

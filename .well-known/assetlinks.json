@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.overseapengate.www.twa",
+        "sha256_cert_fingerprints": ["47:7A:B8:30:A2:24:F7:43:51:84:BA:95:59:3C:2D:8C:75:A3:DE:FB:4A:CB:B3:FB:10:E1:EB:2A:A6:93:A6:7D"]
+      }
+    }]
