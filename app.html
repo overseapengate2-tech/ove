@@ -1033,6 +1033,11 @@ body{font-variant-numeric:tabular-nums}
     document.addEventListener('DOMContentLoaded',function(){
       var mod=document.getElementById('loginModal');
       if(mod){ mod.classList.add('open'); mod.setAttribute('aria-hidden','false'); }
+      // switch to register/forgot based on URL hash
+      var h=(location.hash||'').replace('#','');
+      if(h && typeof switchAuthView==='function'){
+        setTimeout(function(){ switchAuthView(h); },100);
+      }
     });
   }
 })();</script>
