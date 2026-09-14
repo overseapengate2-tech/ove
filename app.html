@@ -1022,6 +1022,20 @@ body{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
+<!-- Embed mode: hide everything except login/register modal (opened from /login.html) -->
+<script>(function(){
+  var qs=new URLSearchParams(location.search);
+  if(qs.get('embed')==='1'){
+    document.documentElement.setAttribute('data-embed','1');
+    var s=document.createElement('style');
+    s.textContent='html[data-embed="1"] body>*:not(#loginModal):not(script){display:none!important}html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] #loginModal .modal-x{display:none!important}';
+    document.head.appendChild(s);
+    document.addEventListener('DOMContentLoaded',function(){
+      var mod=document.getElementById('loginModal');
+      if(mod){ mod.classList.add('open'); mod.setAttribute('aria-hidden','false'); }
+    });
+  }
+})();</script>
 
 <!-- ════ SIDEBAR ซ้าย (drawer) ════ -->
 <style>
