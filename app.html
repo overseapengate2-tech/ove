@@ -1025,21 +1025,21 @@ body{font-variant-numeric:tabular-nums}
 <!-- Embed mode: hide everything except login/register modal (opened from /login.html) -->
 <script>(function(){
   var qs=new URLSearchParams(location.search);
-  if(qs.get('embed')==='1'){
-    document.documentElement.setAttribute('data-embed','1');
-    var s=document.createElement('style');
-    s.textContent='html[data-embed="1"] body>*:not(#loginModal):not(script){display:none!important}html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] #loginModal .modal-x{display:none!important}';
-    document.head.appendChild(s);
-    document.addEventListener('DOMContentLoaded',function(){
-      var mod=document.getElementById('loginModal');
-      if(mod){ mod.classList.add('open'); mod.setAttribute('aria-hidden','false'); }
-      // switch to register/forgot based on URL hash
-      var h=(location.hash||'').replace('#','');
-      if(h && typeof switchAuthView==='function'){
-        setTimeout(function(){ switchAuthView(h); },100);
-      }
+  if(qs.get('embed')!=='1') return;
+  document.documentElement.setAttribute('data-embed','1');
+  var s=document.createElement('style');
+  s.textContent='html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] body>.opg-hide{display:none!important}html[data-embed="1"] #loginModal{display:flex!important;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:18px;background:rgba(60,53,38,.45);backdrop-filter:blur(4px)}html[data-embed="1"] #loginModal .modal-x{display:none!important}';
+  document.head.appendChild(s);
+  window.addEventListener('load',function(){
+    // Hide every body child except the loginModal
+    Array.prototype.forEach.call(document.body.children, function(el){
+      if(el.id!=='loginModal' && el.tagName!=='SCRIPT'){ el.classList.add('opg-hide'); }
     });
-  }
+    var mod=document.getElementById('loginModal');
+    if(mod){ mod.classList.add('open'); mod.setAttribute('aria-hidden','false'); }
+    var h=(location.hash||'').replace('#','');
+    if(h && typeof switchAuthView==='function'){ try{ switchAuthView(h); }catch(e){} }
+  });
 })();</script>
 
 <!-- ════ SIDEBAR ซ้าย (drawer) ════ -->
