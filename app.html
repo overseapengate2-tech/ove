@@ -1028,7 +1028,15 @@ body{font-variant-numeric:tabular-nums}
   if(qs.get('embed')!=='1') return;
   document.documentElement.setAttribute('data-embed','1');
   var s=document.createElement('style');
-  s.textContent='html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] body>.opg-hide{display:none!important}html[data-embed="1"] #loginModal{display:flex!important;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:18px;background:rgba(60,53,38,.45);backdrop-filter:blur(4px)}html[data-embed="1"] #loginModal .modal-x{display:none!important}html[data-embed="1"] #embedBack{position:fixed;top:14px;left:14px;z-index:10000;background:rgba(255,255,255,.9);border:1.5px solid #E7DBC0;color:#7C6739;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(124,103,57,.15)}html[data-embed="1"] #embedBack:hover{background:#fff}';
+  s.textContent='html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] body>.opg-hide{display:none!important}html[data-embed="1"] #loginModal{display:flex!important;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:18px;background:rgba(60,53,38,.45);backdrop-filter:blur(4px)}html[data-embed="1"] #loginModal .modal-x{display:none!important}html[data-embed="1"] #embedBack{position:fixed;top:14px;left:14px;z-index:10000;background:rgba(255,255,255,.9);border:1.5px solid #E7DBC0;color:#7C6739;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(124,103,57,.15)}html[data-embed="1"] #embedBack:hover{background:#fff}
+html[data-embed="1"] #loginModal{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;backdrop-filter:none!important;padding:26px 16px!important;align-items:flex-start!important;padding-top:80px!important}
+html[data-embed="1"] #loginModal .modal-card{background:#fff!important;border:1.5px solid #ECE2CE!important;border-radius:20px!important;padding:36px 32px!important;max-width:440px!important;width:100%!important;box-shadow:0 12px 40px rgba(124,103,57,.15)!important}
+html[data-embed="1"] #loginModal .modal-skip{display:none!important}
+html[data-embed="1"] #loginModal [data-opg-lang]{display:none!important}
+html[data-embed="1"] #loginModal h3{font-family:'Playfair Display',serif!important;color:#63522C!important;font-size:26px!important;margin-bottom:6px!important}
+html[data-embed="1"] #loginModal .sub{color:#7C715B!important;font-size:13.5px!important;margin-bottom:20px!important;line-height:1.6!important}
+html[data-embed="1"] #loginModal .btn-primary{background:#7C6739!important;color:#fff!important;border-radius:10px!important;font-weight:700!important;box-shadow:0 6px 18px rgba(124,103,57,.28)!important}
+html[data-embed="1"] #loginModal .btn-primary:hover{background:#63522C!important}';
   document.head.appendChild(s);
   window.addEventListener('load',function(){
     // Hide every body child except the loginModal
