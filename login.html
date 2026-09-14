@@ -62,8 +62,8 @@ h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);ma
     <div class="help" id="loginHelp"></div>
 
     <div class="links">
-      ยังไม่มีบัญชี? <a href="/app.html?embed=1#register">สมัครสมาชิก</a><br>
-      <a href="/app.html?embed=1#forgot" style="font-size:12.5px;margin-top:6px;display:inline-block">ลืมรหัสผ่าน?</a>
+      ยังไม่มีบัญชี? <a href="#" id="goRegLink">สมัครสมาชิก</a><br>
+      <a href="#" id="goForgotLink" style="font-size:12.5px;margin-top:6px;display:inline-block">ลืมรหัสผ่าน?</a>
     </div>
 
     <div class="divider">หรือ</div>
@@ -103,5 +103,27 @@ async function doLogin(){
 </script>
 <script src="/i18n.js" defer></script>
 <script src="/line-fab.js" defer></script>
+<!-- Register / Forgot in-page overlay via iframe (keeps URL as /login.html) -->
+<div id="opgAuthFrame" style="display:none;position:fixed;inset:0;z-index:9999;background:transparent">
+  <iframe id="opgAuthIframe" style="width:100%;height:100%;border:0;display:block" allow="camera *; microphone *"></iframe>
+</div>
+<script>
+(function(){
+  var frameWrap=document.getElementById('opgAuthFrame');
+  var frame=document.getElementById('opgAuthIframe');
+  function openFrame(view){
+    frame.src='/app.html?embed=1#'+view;
+    frameWrap.style.display='block';
+    document.body.style.overflow='hidden';
+  }
+  document.getElementById('goRegLink')?.addEventListener('click',function(e){ e.preventDefault(); openFrame('register'); });
+  document.getElementById('goForgotLink')?.addEventListener('click',function(e){ e.preventDefault(); openFrame('forgot'); });
+  // Listen for iframe requesting close (back button posts message)
+  window.addEventListener('message',function(e){
+    if(e.data==='opgAuthClose'){ frameWrap.style.display='none'; frame.src=''; document.body.style.overflow=''; }
+    if(e.data==='opgAuthDone'){ location.href='/app.html'; }
+  });
+})();
+</script>
 </body>
 </html>

@@ -1046,7 +1046,8 @@ html[data-embed="1"] #loginModal .btn-primary:hover{background:#63522C!important
     var mod=document.getElementById('loginModal');
     if(mod){ mod.classList.add('open'); mod.setAttribute('aria-hidden','false'); }
     var back=document.createElement('a');
-    back.id='embedBack'; back.href='/login.html'; back.innerHTML='← กลับหน้าเข้าสู่ระบบ';
+    back.id='embedBack'; back.href='#'; back.innerHTML='← กลับหน้าเข้าสู่ระบบ';
+    back.addEventListener('click',function(ev){ ev.preventDefault(); if(window.parent!==window){ try{ window.parent.postMessage('opgAuthClose','*'); return; }catch(e){} } location.href='/login.html'; });
     document.body.appendChild(back);
     var h=(location.hash||'').replace('#','');
     if(h && typeof switchAuthView==='function'){ try{ switchAuthView(h); }catch(e){} }
