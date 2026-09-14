@@ -1028,7 +1028,7 @@ body{font-variant-numeric:tabular-nums}
   if(qs.get('embed')!=='1') return;
   document.documentElement.setAttribute('data-embed','1');
   var s=document.createElement('style');
-  s.textContent='html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] body>.opg-hide{display:none!important}html[data-embed="1"] #loginModal{display:flex!important;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:18px;background:rgba(60,53,38,.45);backdrop-filter:blur(4px)}html[data-embed="1"] #loginModal .modal-x{display:none!important}';
+  s.textContent='html[data-embed="1"] body{background:linear-gradient(180deg,#FAF6EE,#F6F0E1)!important;overflow:auto!important}html[data-embed="1"] body>.opg-hide{display:none!important}html[data-embed="1"] #loginModal{display:flex!important;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:18px;background:rgba(60,53,38,.45);backdrop-filter:blur(4px)}html[data-embed="1"] #loginModal .modal-x{display:none!important}html[data-embed="1"] #embedBack{position:fixed;top:14px;left:14px;z-index:10000;background:rgba(255,255,255,.9);border:1.5px solid #E7DBC0;color:#7C6739;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(124,103,57,.15)}html[data-embed="1"] #embedBack:hover{background:#fff}';
   document.head.appendChild(s);
   window.addEventListener('load',function(){
     // Hide every body child except the loginModal
@@ -1037,6 +1037,9 @@ body{font-variant-numeric:tabular-nums}
     });
     var mod=document.getElementById('loginModal');
     if(mod){ mod.classList.add('open'); mod.setAttribute('aria-hidden','false'); }
+    var back=document.createElement('a');
+    back.id='embedBack'; back.href='/login.html'; back.innerHTML='← กลับหน้าเข้าสู่ระบบ';
+    document.body.appendChild(back);
     var h=(location.hash||'').replace('#','');
     if(h && typeof switchAuthView==='function'){ try{ switchAuthView(h); }catch(e){} }
   });
