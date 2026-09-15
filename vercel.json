@@ -1,5 +1,13 @@
 {
   "crons": [
     { "path": "/api/orders?expire=1", "schedule": "0 17 * * *" }
+  ],
+  "redirects": [
+    {
+      "source": "/((?!\\.well-known/).*)",
+      "has": [{ "type": "host", "value": "overseapengate.com" }],
+      "destination": "https://www.overseapengate.com/$1",
+      "permanent": true
+    }
   ]
 }
