@@ -39,7 +39,7 @@ h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);ma
 .line-btn:hover{background:#05a548}
 .rg-row{display:flex;gap:6px;margin-bottom:12px}
 .rg-row input{flex:1;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;background:#fff;outline:none}
-.rg-row button{white-space:nowrap;padding:0 14px;background:var(--brand-600);color:#fff;border:0;border-radius:10px;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit}
+.rg-row button{white-space:nowrap;padding:10px 12px;background:var(--brand-600);color:#fff;border:0;border-radius:10px;font-weight:700;font-size:13px;line-height:1.2;cursor:pointer;font-family:inherit;flex-shrink:0}
 .rg-row button:disabled{opacity:.55;cursor:default}
 .otp-box input{width:100%;padding:12px 14px;border:1.5px solid var(--brand);border-radius:10px;font-family:inherit;font-size:17px;text-align:center;letter-spacing:6px;font-weight:700;background:#fff;outline:none}
 .otp-box .status{font-size:12px;color:var(--ink-soft);margin-top:6px;text-align:center}
@@ -207,7 +207,7 @@ async function doSendOtp(isResend){
     $('#rgOtpCode').focus();
     help.style.color='var(--ok)'; help.textContent=isResend?'✅ ส่งรหัสใหม่แล้ว':'✅ ส่ง OTP ไปที่ '+phone;
     let sec=60; btn.textContent='รอ '+sec+' วิ';
-    const tick=setInterval(()=>{ sec--; if(sec<=0){ clearInterval(tick); btn.disabled=false; btn.textContent='📱 ส่งอีกครั้ง'; } else btn.textContent='รอ '+sec+' วิ'; }, 1000);
+    const tick=setInterval(()=>{ sec--; if(sec<=0){ clearInterval(tick); btn.disabled=false; btn.textContent='📱 ส่งใหม่'; } else btn.textContent='รอ '+sec+' วิ'; }, 1000);
   }catch(err){ help.textContent=err.message||'ส่ง OTP ไม่สำเร็จ'; btn.disabled=false; btn.textContent=oldT; }
 }
 $('#rgSendOtp').addEventListener('click', ()=>doSendOtp(false));
