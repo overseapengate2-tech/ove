@@ -85,6 +85,14 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 .svc .ic{width:100px;height:100px;border-radius:50%;background:var(--brand-50);border:2px solid var(--brand-100);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 16px}
 .svc b{display:block;font-size:16px;color:var(--brand-700);margin-bottom:10px;font-weight:700}
 .svc p{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.side-shops{position:fixed;left:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:40;animation:ssFloat 3.5s ease-in-out infinite}
+.side-shops .ss-btn{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px 8px 8px;box-shadow:0 6px 18px rgba(124,103,57,.18);transition:transform .2s ease,box-shadow .2s ease;width:64px}
+.side-shops .ss-btn:hover{transform:translateX(4px) scale(1.05);box-shadow:0 10px 26px rgba(124,103,57,.28)}
+.side-shops .ss-ic{width:38px;height:38px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:16px;letter-spacing:0}
+.side-shops .ss-lb{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.3px}
+@keyframes ssFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 8px))}}
+@media(max-width:1100px){.side-shops{left:8px}.side-shops .ss-btn{width:56px;padding:8px 6px 6px}.side-shops .ss-ic{width:32px;height:32px;font-size:14px}.side-shops .ss-lb{font-size:10px}}
+@media(max-width:640px){.side-shops{display:none}}
 .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:6px}
 .prod{display:block;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 14px rgba(124,103,57,.08);transition:.15s all;position:relative}
 .prod:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(124,103,57,.16);border-color:var(--brand-100)}
@@ -189,6 +197,21 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
   m.querySelectorAll('a').forEach(function(a){a.addEventListener('click',close);});
 })();
 </script>
+
+<aside class="side-shops" aria-label="ลิงก์ร้านค้าจีน">
+  <a class="ss-btn" href="https://world.taobao.com/" target="_blank" rel="noopener nofollow" title="Taobao">
+    <span class="ss-ic" style="background:#ff5000">淘</span>
+    <span class="ss-lb">Taobao</span>
+  </a>
+  <a class="ss-btn" href="https://world.tmall.com/" target="_blank" rel="noopener nofollow" title="Tmall">
+    <span class="ss-ic" style="background:#d40000">猫</span>
+    <span class="ss-lb">Tmall</span>
+  </a>
+  <a class="ss-btn" href="https://www.1688.com/" target="_blank" rel="noopener nofollow" title="1688">
+    <span class="ss-ic" style="background:#ff7300">1688</span>
+    <span class="ss-lb">1688</span>
+  </a>
+</aside>
 
 <section class="hero-image" style="background:linear-gradient(180deg,#FAF6EE 0%,#F6F0E1 100%);padding:24px 0">
   <div style="max-width:1400px;margin:0 auto;padding:0 16px">
