@@ -44,14 +44,6 @@ h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);ma
 .otp-box input{width:100%;padding:12px 14px;border:1.5px solid var(--brand);border-radius:10px;font-family:inherit;font-size:17px;text-align:center;letter-spacing:6px;font-weight:700;background:#fff;outline:none}
 .otp-box .status{font-size:12px;color:var(--ink-soft);margin-top:6px;text-align:center}
 .otp-box .status a{color:var(--brand-600);cursor:pointer;text-decoration:underline}
-.id-box{padding:12px;border:1.5px dashed var(--brand);border-radius:10px;background:var(--brand-50);text-align:center;margin-bottom:12px}
-.id-box .title{font-weight:600;color:var(--brand-600);margin-bottom:8px;font-size:13.5px}
-.id-btns{display:flex;gap:8px}
-.id-btns label{flex:1;padding:10px;background:#fff;border:1.5px solid var(--brand);border-radius:8px;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--brand-700)}
-.verify-box{display:none;text-align:center}
-.verify-box img{max-width:260px;max-height:170px;border-radius:10px;margin:0 auto 12px;border:1.5px solid var(--border);display:block;object-fit:cover}
-.verify-ok{display:none;background:var(--brand-50);border-radius:12px;padding:14px;margin:10px 0}
-.verify-err{display:none;background:#FCE8E6;border-radius:12px;padding:14px;margin:10px 0;color:var(--err)}
 </style>
 </head>
 <body>
@@ -100,15 +92,6 @@ h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);ma
         <div class="field">
           <input id="rgEmail" type="email" placeholder="อีเมล" autocomplete="email"/>
         </div>
-        <div class="id-box" id="idBox">
-          <div class="title">🪪 รูปบัตรประชาชน</div>
-          <div class="id-btns">
-            <label for="rgIdCam">📷 ถ่ายรูป</label>
-            <label for="rgIdFile">🖼️ เลือกจากคลัง</label>
-          </div>
-        </div>
-        <input id="rgIdCam" type="file" accept="image/*" capture="environment" style="display:none"/>
-        <input id="rgIdFile" type="file" accept="image/*" style="display:none"/>
         <div class="field">
           <input id="rgPassword" type="password" placeholder="ตั้งรหัสผ่าน (อย่างน้อย 6 ตัว)" autocomplete="new-password"/>
         </div>
@@ -117,24 +100,6 @@ h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--brand-700);ma
         </div>
         <button class="btn btn-primary" id="rgSubmit" type="button">🤝 ลงทะเบียน</button>
         <div class="help" id="rgHelp"></div>
-      </div>
-      <div id="verifyBox" class="verify-box">
-        <h2 style="font-size:20px;margin-bottom:8px">🔍 กำลังตรวจสอบบัตร</h2>
-        <div id="verifyStatus" class="sub" style="margin-bottom:14px">กรุณารอสักครู่…</div>
-        <img id="verifyPreview" alt=""/>
-        <div id="verifySpinner" style="font-size:32px;margin:12px 0">⏳</div>
-        <div class="verify-ok" id="verifyResult">
-          <div style="font-size:36px">✅</div>
-          <div style="font-weight:700;margin:6px 0 2px">ตรวจสอบสำเร็จ</div>
-          <div id="verifyName" style="font-size:14px;color:var(--ink)"></div>
-          <div id="verifyIdMasked" style="font-size:13px;color:var(--ink-soft);margin-top:4px;font-family:monospace"></div>
-        </div>
-        <div class="verify-err" id="verifyError">
-          <div style="font-size:36px">❌</div>
-          <div id="verifyErrorText" style="font-weight:600;font-size:14px;margin:6px 0"></div>
-        </div>
-        <button class="btn btn-primary" id="verifyContinueBtn" type="button" style="display:none">✅ กลับไปกรอกข้อมูลสมัคร</button>
-        <button class="btn btn-ghost" id="verifyRetryBtn" type="button" style="display:none;margin-top:8px">🔁 ถ่ายใหม่</button>
       </div>
       <div class="links" style="margin-top:16px">
         มีบัญชีอยู่แล้ว? <a id="goLogin">เข้าสู่ระบบ</a>
@@ -213,77 +178,6 @@ async function doSendOtp(isResend){
 $('#rgSendOtp').addEventListener('click', ()=>doSendOtp(false));
 $('#rgResendOtp').addEventListener('click', (e)=>{ e.preventDefault(); doSendOtp(true); });
 
-let rgIdImageData='';
-let rgOcrToken='';
-
-function fileToResizedDataURL(file, maxW=1000, q=0.75){
-  return new Promise((resolve,reject)=>{
-    const img=new Image(); const url=URL.createObjectURL(file);
-    img.onload=()=>{
-      const s=Math.min(1, maxW/img.width);
-      const c=document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
-      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-      URL.revokeObjectURL(url); resolve(c.toDataURL('image/jpeg', q));
-    };
-    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error('อ่านไฟล์รูปไม่สำเร็จ')); };
-    img.src=url;
-  });
-}
-
-async function runOcrCheck(image){
-  const spin=$('#verifySpinner'), ok=$('#verifyResult'), er=$('#verifyError'), cont=$('#verifyContinueBtn'), retry=$('#verifyRetryBtn'), st=$('#verifyStatus');
-  spin.style.display='block'; ok.style.display='none'; er.style.display='none'; cont.style.display='none'; retry.style.display='none';
-  st.textContent='กำลังตรวจสอบบัตร…';
-  try{
-    const r=await fetch('/api/address',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ ocrCheck:{ image } }) });
-    const j=await r.json();
-    spin.style.display='none';
-    if(!j.ok) throw new Error(j.error||'ตรวจสอบบัตรไม่สำเร็จ');
-    rgOcrToken=j.ocrToken||'';
-    $('#verifyName').textContent=j.thName?'ชื่อ: '+j.thName:'';
-    $('#verifyIdMasked').textContent='เลขบัตร: '+(j.idNumberMasked||'');
-    ok.style.display='block'; cont.style.display='inline-block'; retry.style.display='inline-block';
-    st.textContent='ตรวจสอบเสร็จ — กดปุ่มเพื่อไปกรอกข้อมูลต่อ';
-  }catch(err){
-    spin.style.display='none'; rgOcrToken='';
-    $('#verifyErrorText').textContent=err.message||'ตรวจสอบไม่สำเร็จ';
-    er.style.display='block'; retry.style.display='inline-block';
-    st.textContent='ตรวจสอบไม่ผ่าน';
-  }
-}
-
-async function handleImgUpload(e){
-  const f=e.target.files && e.target.files[0]; if(!f) return;
-  const help=$('#rgHelp'); help.textContent='';
-  try{
-    rgIdImageData=await fileToResizedDataURL(f);
-    $('#verifyPreview').src=rgIdImageData;
-    $('#regForm').style.display='none';
-    $('#verifyBox').style.display='block';
-    await runOcrCheck(rgIdImageData);
-  }catch(err){
-    rgIdImageData=''; rgOcrToken='';
-    help.textContent=err.message||'อ่านไฟล์รูปไม่สำเร็จ กรุณาลองใหม่'; help.style.color='var(--err)';
-  }
-}
-$('#rgIdCam').addEventListener('change', handleImgUpload);
-$('#rgIdFile').addEventListener('change', handleImgUpload);
-
-$('#verifyContinueBtn').addEventListener('click', ()=>{
-  $('#verifyBox').style.display='none';
-  $('#regForm').style.display='block';
-  const idBox=$('#idBox');
-  if(idBox && rgOcrToken){
-    idBox.innerHTML='<div style="padding:8px 0;color:var(--ok);font-weight:700">✅ ตรวจสอบบัตรผ่านแล้ว</div><div class="id-btns"><label for="rgIdCam">📷 ถ่ายรูปใหม่</label><label for="rgIdFile">🖼️ เลือกใหม่</label></div>';
-  }
-});
-$('#verifyRetryBtn').addEventListener('click', ()=>{
-  rgIdImageData=''; rgOcrToken='';
-  $('#rgIdCam').value=''; $('#rgIdFile').value='';
-  $('#verifyBox').style.display='none';
-  $('#regForm').style.display='block';
-});
-
 $('#rgSubmit').addEventListener('click', doRegister);
 
 async function doRegister(){
@@ -295,13 +189,12 @@ async function doRegister(){
   const help=$('#rgHelp'); help.textContent=''; help.style.color='var(--err)';
   if(!phone){ help.textContent='กรุณากรอกเบอร์โทรศัพท์'; return; }
   if(!/^\S+@\S+\.\S+$/.test(email)){ help.textContent='รูปแบบอีเมลไม่ถูกต้อง'; return; }
-  if(!rgOcrToken){ help.textContent='กรุณาแนบรูปบัตรและตรวจสอบให้ผ่านก่อน'; return; }
   if(password.length<6){ help.textContent='รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
   if(password!==confirmPassword){ help.textContent='รหัสผ่านไม่ตรงกัน'; return; }
   if(!/^\d{6}$/.test(otpCode)){ help.textContent='กรุณากด "ส่ง OTP" แล้วกรอกรหัส 6 หลักที่ได้รับ'; return; }
   const btn=$('#rgSubmit'); btn.disabled=true; const oldT=btn.textContent; btn.textContent='กำลังสมัคร…';
   try{
-    const r=await fetch('/api/address',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ register:{ phone, email, password, confirmPassword, ocrToken:rgOcrToken, otpCode } }) });
+    const r=await fetch('/api/address',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ register:{ phone, email, password, confirmPassword, otpCode } }) });
     const j=await r.json();
     if(!j.ok) throw new Error(j.error||'สมัครสมาชิกไม่สำเร็จ');
     localStorage.setItem('opg_user', JSON.stringify(j.user));

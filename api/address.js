@@ -162,14 +162,10 @@ export default async function handler(req, res) {
       const otpCode = String(r.otpCode || '').trim();
       const newPassword = String(r.newPassword || '');
       const confirmPassword = String(r.confirmPassword || '');
-      const ocrToken = String(r.ocrToken || '').trim();
       if (!/^66\d{8,10}$/.test(phone)) return res.status(400).json({ ok: false, error: 'รูปแบบเบอร์โทรไม่ถูกต้อง' });
       if (!/^\d{6}$/.test(otpCode)) return res.status(400).json({ ok: false, error: 'รหัส OTP ต้องเป็นตัวเลข 6 หลัก' });
       if (newPassword.length < 6) return res.status(400).json({ ok: false, error: 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร' });
       if (newPassword !== confirmPassword) return res.status(400).json({ ok: false, error: 'รหัสผ่านไม่ตรงกัน' });
-      if (!ocrToken) return res.status(400).json({ ok: false, error: 'กรุณายืนยันตัวตนด้วยบัตรประชาชนก่อน' });
-      const cachedOcr = await getOcrCache(ocrToken);
-      if (!cachedOcr || !cachedOcr.idNumber) return res.status(410).json({ ok: false, error: 'ผลตรวจสอบบัตรหมดอายุ กรุณาถ่ายบัตรใหม่' });
       const token = await getOtp(phone);
       if (!token) return res.status(410).json({ ok: false, error: 'รหัส OTP หมดอายุ กรุณาขอใหม่' });
       try {
@@ -181,14 +177,9 @@ export default async function handler(req, res) {
       const all = await listAccounts();
       const acct = all.find(a => normalizePhone(String(a.phone || '')) === phone);
       if (!acct) return res.status(404).json({ ok: false, error: 'ไม่พบบัญชีที่ใช้เบอร์นี้' });
-      // เช็คว่าบัตรที่อัปโหลดตอนลืมรหัสผ่าน = บัตรใบเดียวกับตอนสมัคร
-      if (!acct.idNumber || String(acct.idNumber) !== String(cachedOcr.idNumber)) {
-        return res.status(403).json({ ok: false, error: 'บัตรประชาชนไม่ตรงกับที่ใช้ตอนสมัคร — ไม่สามารถรีเซ็ตรหัสผ่านได้' });
-      }
       acct.passwordHash = hashPassword(newPassword);
       await saveAccount(acct.internalId, acct);
       try { await delOtp(phone); } catch (e2) {}
-      try { await delOcrCache(ocrToken); } catch (e2) {}
       return res.status(200).json({ ok: true });
     }
 
@@ -226,18 +217,11 @@ export default async function handler(req, res) {
       const email = String(r.email || '').trim().toLowerCase().slice(0, 120);
       const password = String(r.password || '');
       const confirmPassword = String(r.confirmPassword || '');
-      const ocrToken = String(r.ocrToken || '').trim();
       const otpCode = String(r.otpCode || '').trim();
       if (!phone || phone.replace(/\D/g, '').length < 9) return res.status(400).json({ ok: false, error: 'เบอร์โทรศัพท์ไม่ถูกต้อง' });
       if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ ok: false, error: 'รูปแบบอีเมลไม่ถูกต้อง' });
       if (password.length < 6) return res.status(400).json({ ok: false, error: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' });
       if (password !== confirmPassword) return res.status(400).json({ ok: false, error: 'รหัสผ่านไม่ตรงกัน' });
-      if (!ocrToken) return res.status(400).json({ ok: false, error: 'กรุณาตรวจสอบบัตรประชาชนก่อนสมัคร' });
-      const cached = await getOcrCache(ocrToken);
-      if (!cached || !cached.idNumber || !cached.image) {
-        return res.status(410).json({ ok: false, error: 'ผลการตรวจสอบบัตรหมดอายุ กรุณาถ่ายบัตรใหม่' });
-      }
-      const idImage = cached.image;
       // ต้องยืนยัน OTP เบอร์นี้ก่อน — verify กับ TBS ด้วย token ที่เก็บไว้ตอน otpSend
       const phoneKey = normalizePhone(phone);
       const token = await getOtp(phoneKey);
@@ -259,23 +243,18 @@ export default async function handler(req, res) {
       const memberCode = await nextMemberCode();
       const now = new Date().toISOString();
       const acct = {
-        name: cached.thName || '', phone, email,
-        idNumber: cached.idNumber,
-        idType: 'thai',
-        hasIdImage: true,
+        name: '', phone, email,
         internalId,
         memberCode,
         passwordHash: hashPassword(password),
         verifyStatus: 'NONE',
         createdAt: now,
       };
-      await saveAccountImage(internalId, idImage);
       await saveAccount(internalId, acct);
       await bindEmailToId(email, internalId);
-      await saveUserProfile(email, { idType: 'thai', registeredAt: now });
+      await saveUserProfile(email, { registeredAt: now });
       try { await addKnownUser(email); } catch (e2) {}
       try { await delOtp(phoneKey); } catch (e2) {}
-      try { await delOcrCache(ocrToken); } catch (e2) {}
       return res.status(200).json({ ok: true, user: safeAccount(acct) });
     }
 

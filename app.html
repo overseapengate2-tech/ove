@@ -1283,15 +1283,6 @@ html[data-embed="1"] #loginModal .btn-primary:hover{background:#63522C!important
           <span id="fpOtpStatus">รหัสส่งไปที่ SMS แล้ว</span> · <a href="#" id="fpResendOtp" style="color:var(--brand-600,#7C6739)">ส่งอีกครั้ง</a>
         </div>
       </div>
-      <div id="fpIdImageLabel" style="display:block;width:100%;max-width:340px;margin:6px auto;padding:10px 14px;border:1.5px dashed var(--brand,#9C8654);border-radius:10px;font-size:13.5px;color:var(--brand-600,#7C6739);background:var(--brand-50,#F6F0E1);text-align:center">
-        <div style="margin-bottom:8px">🪪 ยืนยันตัวตนด้วยบัตรประชาชน<br><span style="font-size:11.5px;font-weight:400">(ต้องเป็นบัตรใบเดียวกับตอนสมัคร)</span></div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <label for="fpIdCam" style="flex:1;min-width:120px;padding:9px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">📷 ถ่ายรูป</label>
-          <label for="fpIdFile" style="flex:1;min-width:120px;padding:9px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">🖼️ เลือกจากคลัง</label>
-        </div>
-      </div>
-      <input id="fpIdCam" type="file" accept="image/*" capture="environment" style="display:none" />
-      <input id="fpIdFile" type="file" accept="image/*" style="display:none" />
       <input id="fpNewPassword" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <input id="fpConfirm" type="password" placeholder="ยืนยันรหัสผ่านใหม่" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <div class="modal-help" id="fpHelp" style="min-height:20px;margin-top:6px"></div>
@@ -1312,16 +1303,6 @@ html[data-embed="1"] #loginModal .btn-primary:hover{background:#63522C!important
         </div>
       </div>
       <input id="rgEmail" type="email" placeholder="อีเมล" autocomplete="email" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
-      <div id="rgIdImageLabel" style="display:block;width:100%;max-width:340px;margin:6px auto;padding:10px 14px;border:1.5px dashed var(--brand,#9C8654);border-radius:10px;font-size:13.5px;color:var(--brand-600,#7C6739);background:var(--brand-50,#F6F0E1);text-align:center">
-        <div style="margin-bottom:8px">🪪 รูปบัตรประชาชน</div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <label for="rgIdImageCam" style="flex:1;min-width:120px;padding:9px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">📷 ถ่ายรูป</label>
-          <label for="rgIdImageFile" style="flex:1;min-width:120px;padding:9px 10px;background:#fff;border:1px solid var(--brand,#9C8654);border-radius:8px;cursor:pointer;font-weight:600">🖼️ เลือกจากคลัง</label>
-        </div>
-      </div>
-      <input id="rgIdImageCam" type="file" accept="image/*" capture="environment" style="display:none" />
-      <input id="rgIdImageFile" type="file" accept="image/*" style="display:none" />
-      <input id="rgIdImageInput" type="file" accept="image/*" style="display:none" />
       <input id="rgPassword" type="password" placeholder="ตั้งรหัสผ่าน (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <input id="rgConfirm" type="password" placeholder="ยืนยันรหัสผ่าน" autocomplete="new-password" style="width:100%;max-width:340px;padding:11px 14px;border:1px solid var(--line,#ddd);border-radius:10px;font-size:15px;margin:6px auto;display:block" />
       <div class="modal-help" id="rgHelp" style="min-height:20px;margin-top:6px"></div>
@@ -2039,12 +2020,11 @@ async function doPasswordReset(){
   const help = $('#fpHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
   if(!phone){ help.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; return; }
   if(!/^\d{6}$/.test(otpCode)){ help.textContent = 'กรุณากด "ส่ง OTP" แล้วกรอกรหัส 6 หลักที่ได้รับ'; return; }
-  if(!fpOcrToken){ help.textContent = 'กรุณาแนบรูปบัตรประชาชนและให้ระบบยืนยันบัตรก่อน'; return; }
   if(newPassword.length < 6){ help.textContent = 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
   if(newPassword !== confirmPassword){ help.textContent = 'รหัสผ่านไม่ตรงกัน'; return; }
   const btn = $('#fpSubmit'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังรีเซ็ต…';
   try{
-    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ passwordReset:{ phone, otpCode, newPassword, confirmPassword, ocrToken: fpOcrToken } }) });
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ passwordReset:{ phone, otpCode, newPassword, confirmPassword } }) });
     const j = await r.json();
     if(!j.ok) throw new Error(apiErrText(j.error, 'รีเซ็ตรหัสผ่านไม่สำเร็จ'));
     help.style.color = 'var(--ok,#1a7f37)';
@@ -2108,13 +2088,12 @@ async function doRegister(){
   const help = $('#rgHelp'); help.textContent = ''; help.style.color = 'var(--err,#b3392f)';
   if(!phone){ help.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; return; }
   if(!/^\S+@\S+\.\S+$/.test(email)){ help.textContent = 'รูปแบบอีเมลไม่ถูกต้อง'; return; }
-  if(!rgOcrToken){ help.textContent = 'กรุณาแนบรูปบัตรและตรวจสอบให้ผ่านก่อน'; return; }
   if(password.length < 6){ help.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
   if(password !== confirmPassword){ help.textContent = 'รหัสผ่านไม่ตรงกัน'; return; }
   if(!/^\d{6}$/.test(otpCode)){ help.textContent = 'กรุณากด "ส่ง OTP" แล้วกรอกรหัส 6 หลักที่ได้รับ'; return; }
   const btn = $('#rgSubmit'); btn.disabled = true; const oldText = btn.textContent; btn.textContent = 'กำลังสมัคร…';
   try{
-    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ register:{ phone, email, password, confirmPassword, ocrToken: rgOcrToken, otpCode } }) });
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ register:{ phone, email, password, confirmPassword, otpCode } }) });
     const j = await r.json();
     if(!j.ok) throw new Error(apiErrText(j.error, 'สมัครสมาชิกไม่สำเร็จ'));
     const user = j.user;
