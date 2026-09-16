@@ -43,8 +43,19 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 .nav-line:hover{background:#05a548}
 .nav-login{background:var(--brand-600);color:#fff}
 .nav-login:hover{background:var(--brand-700)}
-@media(max-width:900px){.nav-links{display:none}.nav-phone{display:none}}
-@media(max-width:640px){.nav-inner{gap:10px;padding:10px 14px;height:60px;justify-content:space-between}.nav-brand{gap:8px}.nav-brand .lg{width:36px;height:36px}.nav-brand .wm b{font-size:13px;letter-spacing:2px}.nav-brand .wm small{font-size:8px;letter-spacing:3px;margin-top:2px}.nav-actions{gap:6px}.nav-btn{padding:8px 14px;font-size:12.5px;font-weight:700;white-space:nowrap}.nav-line{width:36px;height:36px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0;box-shadow:0 4px 12px rgba(6,199,85,.3)}.nav-line::before{content:"💬";font-size:16px}}
+.nav-burger{display:none;background:transparent;border:0;padding:8px;cursor:pointer;color:var(--brand-700);font-size:22px;line-height:1;border-radius:8px}
+.nav-burger:hover{background:var(--brand-50)}
+.nav-mobile{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(60,42,14,.5);z-index:100;backdrop-filter:blur(4px)}
+.nav-mobile.open{display:block}
+.nav-mobile-panel{position:absolute;top:0;right:0;width:min(320px,85vw);height:100%;background:#fff;box-shadow:-8px 0 32px rgba(0,0,0,.15);padding:70px 24px 24px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.nav-mobile-close{position:absolute;top:14px;right:14px;background:transparent;border:0;font-size:26px;color:var(--ink-soft);cursor:pointer;width:40px;height:40px;border-radius:50%;line-height:1}
+.nav-mobile-close:hover{background:var(--brand-50)}
+.nav-mobile-panel a{padding:14px 16px;color:var(--ink);font-weight:600;font-size:15px;border-radius:10px;border-bottom:1px solid var(--border)}
+.nav-mobile-panel a:hover{background:var(--brand-50);color:var(--brand-700)}
+.nav-mobile-panel a:last-child{border-bottom:0}
+.nav-mobile-panel .mob-phone{margin-top:14px;padding:14px 16px;background:var(--brand-50);border-radius:12px;font-weight:700;color:var(--brand-700);text-align:center;font-size:15px}
+@media(max-width:900px){.nav-links{display:none}.nav-phone{display:none}.nav-burger{display:inline-flex;align-items:center;justify-content:center}}
+@media(max-width:640px){.nav-inner{gap:8px;padding:10px 14px;height:60px;justify-content:space-between}.nav-brand{gap:8px}.nav-brand .lg{width:36px;height:36px}.nav-brand .wm b{font-size:13px;letter-spacing:2px}.nav-brand .wm small{font-size:8px;letter-spacing:3px;margin-top:2px}.nav-actions{gap:6px}.nav-btn{padding:8px 14px;font-size:12.5px;font-weight:700;white-space:nowrap}.nav-line{width:36px;height:36px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0;box-shadow:0 4px 12px rgba(6,199,85,.3)}.nav-line::before{content:"💬";font-size:16px}}
 
 .hero{background:linear-gradient(180deg,var(--hero-a) 0%,var(--hero-b) 100%);padding:60px 0 100px;position:relative;overflow:hidden;text-align:center}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(255,255,255,.35) 0%,transparent 50%);pointer-events:none}
@@ -133,9 +144,34 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
     <div class="nav-actions">
       <a class="nav-btn nav-line" href="https://line.me/R/ti/p/@overseapengate" target="_blank" rel="noopener">💬 เพิ่มเพื่อน LINE</a>
       <a class="nav-btn nav-login" href="/login.html">เข้าสู่ระบบ</a>
+      <button class="nav-burger" id="navBurger" aria-label="เปิดเมนู" aria-expanded="false">☰</button>
     </div>
   </div>
 </nav>
+
+<div class="nav-mobile" id="navMobile" role="dialog" aria-label="เมนู">
+  <div class="nav-mobile-panel">
+    <button class="nav-mobile-close" id="navMobileClose" aria-label="ปิดเมนู">×</button>
+    <a href="/">🏠 หน้าแรก</a>
+    <a href="#services">🛍 บริการของเรา</a>
+    <a href="/calc.html">💰 อัตราค่าขนส่ง</a>
+    <a href="/how-order.html">📖 ขั้นตอนการสั่งซื้อ</a>
+    <a href="#contact">📞 ติดต่อเรา</a>
+    <div class="mob-phone">☎ 095-760-6258</div>
+  </div>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('navBurger'),m=document.getElementById('navMobile'),c=document.getElementById('navMobileClose');
+  if(!b||!m)return;
+  function open(){m.classList.add('open');b.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
+  function close(){m.classList.remove('open');b.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+  b.addEventListener('click',open);
+  c&&c.addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  m.querySelectorAll('a').forEach(function(a){a.addEventListener('click',close);});
+})();
+</script>
 
 <section class="hero-image" style="background:linear-gradient(180deg,#FAF6EE 0%,#F6F0E1 100%);padding:24px 0">
   <div style="max-width:1400px;margin:0 auto;padding:0 16px">
