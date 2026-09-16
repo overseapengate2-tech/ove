@@ -80,35 +80,16 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 .section h2{text-align:center;font-family:'Playfair Display',serif;font-weight:800;font-size:36px;color:var(--brand-700);margin-bottom:12px}
 .section p.lead{text-align:center;color:var(--ink-soft);font-size:15px;max-width:600px;margin:0 auto 40px}
 .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:24px}
-@media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr)}.prod-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:960px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
 .svc{text-align:center;padding:24px 18px}
 .svc .ic{width:100px;height:100px;border-radius:50%;background:var(--brand-50);border:2px solid var(--brand-100);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 16px}
 .svc b{display:block;font-size:16px;color:var(--brand-700);margin-bottom:10px;font-weight:700}
 .svc p{font-size:13px;color:var(--ink-soft);line-height:1.6}
-.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:6px}
-.prod{display:block;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 14px rgba(124,103,57,.08);transition:.15s all;position:relative}
-.prod:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(124,103,57,.16);border-color:var(--brand-100)}
-.prod-img{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:64px}
-.prod-img img{width:100%;height:100%;object-fit:cover;display:block}
-.prod-src{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px}
-.src-taobao{background:#ff5000}
-.src-tmall{background:#d40000}
-.src-1688{background:#ff7300}
-.prod-title{padding:10px 12px 4px;font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px}
-.prod-price{padding:0 12px 12px;font-family:'Playfair Display',serif;font-weight:800;font-size:18px;color:var(--brand-700)}
-.prod-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:#fff;border:1.5px solid var(--brand-100);border-radius:999px;color:var(--brand-700);font-weight:700;font-size:13.5px;text-decoration:none;transition:.15s all}
-.prod-cta:hover{background:var(--brand-50);border-color:var(--brand)}
 @media(max-width:640px){
   .section{padding:36px 16px}
   .section h2{font-size:26px;margin-bottom:8px}
   .section p.lead{font-size:13.5px;margin-bottom:22px}
   .svc-grid{grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
-  .prod-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .prod-img{font-size:42px}
-  .prod-title{font-size:12px;padding:8px 10px 2px;min-height:32px}
-  .prod-price{font-size:15px;padding:0 10px 10px}
-  .prod-src{font-size:10px;padding:2px 7px;top:7px;left:7px}
-  .prod-cta{padding:8px 14px;font-size:12.5px}
   .svc{padding:14px 8px}
   .svc .ic{width:60px;height:60px;font-size:28px;margin-bottom:10px;border-width:1.5px}
   .svc b{font-size:13.5px;margin-bottom:6px;line-height:1.3}
@@ -210,67 +191,6 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
     <div class="svc"><div class="ic">💴</div><b>บริการเงินหยวน</b><p>เติม Alipay · ชำระร้านค้าจีน<br>จ่ายบาทตามเรทของวัน</p></div>
   </div>
 </section>
-<!-- ═══════ FEATURED PRODUCTS ═══════ -->
-<section class="section" id="featured" style="padding-top:20px">
-  <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:800;font-size:30px;color:var(--brand-700);margin-bottom:8px">สินค้าแนะนำจากจีน</h2>
-  <p style="text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:22px">คัดสินค้ายอดนิยมจาก Taobao · Tmall · 1688 — กดเข้าไปดูบนเว็บจีนได้เลย</p>
-  <div class="prod-grid">
-    <a class="prod" href="https://world.taobao.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#fde68a,#f59e0b)"><span>👕</span></div>
-      <span class="prod-src src-taobao">Taobao</span>
-      <div class="prod-title">เสื้อโปโลแขนยาว ผู้ชาย</div>
-      <div class="prod-price">฿533</div>
-    </a>
-    <a class="prod" href="https://world.tmall.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#bfdbfe,#3b82f6)"><span>👟</span></div>
-      <span class="prod-src src-tmall">Tmall</span>
-      <div class="prod-title">รองเท้าผ้าใบวิ่ง Sports</div>
-      <div class="prod-price">฿890</div>
-    </a>
-    <a class="prod" href="https://www.1688.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#fecaca,#ef4444)"><span>🎒</span></div>
-      <span class="prod-src src-1688">1688</span>
-      <div class="prod-title">กระเป๋าเป้ กันน้ำ ขายส่ง</div>
-      <div class="prod-price">฿280</div>
-    </a>
-    <a class="prod" href="https://world.taobao.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#ddd6fe,#8b5cf6)"><span>⌚</span></div>
-      <span class="prod-src src-taobao">Taobao</span>
-      <div class="prod-title">Smart Watch นาฬิกาอัจฉริยะ</div>
-      <div class="prod-price">฿650</div>
-    </a>
-    <a class="prod" href="https://world.tmall.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#a7f3d0,#10b981)"><span>💄</span></div>
-      <span class="prod-src src-tmall">Tmall</span>
-      <div class="prod-title">เซ็ตเครื่องสำอาง ผู้หญิง</div>
-      <div class="prod-price">฿420</div>
-    </a>
-    <a class="prod" href="https://www.1688.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#fed7aa,#f97316)"><span>🧸</span></div>
-      <span class="prod-src src-1688">1688</span>
-      <div class="prod-title">ตุ๊กตาของเล่นเด็ก ขายส่ง</div>
-      <div class="prod-price">฿150</div>
-    </a>
-    <a class="prod" href="https://world.taobao.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#e0e7ff,#6366f1)"><span>📱</span></div>
-      <span class="prod-src src-taobao">Taobao</span>
-      <div class="prod-title">เคสมือถือ iPhone 15/16</div>
-      <div class="prod-price">฿89</div>
-    </a>
-    <a class="prod" href="https://www.1688.com/" target="_blank" rel="noopener nofollow">
-      <div class="prod-img" style="background:linear-gradient(135deg,#fbcfe8,#ec4899)"><span>🏠</span></div>
-      <span class="prod-src src-1688">1688</span>
-      <div class="prod-title">ของแต่งบ้าน ราคาโรงงาน</div>
-      <div class="prod-price">฿199</div>
-    </a>
-  </div>
-  <div style="text-align:center;margin-top:26px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px">
-    <a href="https://world.taobao.com/" target="_blank" rel="noopener nofollow" class="prod-cta">🔍 ค้นหาบน Taobao</a>
-    <a href="https://world.tmall.com/" target="_blank" rel="noopener nofollow" class="prod-cta">🔍 ค้นหาบน Tmall</a>
-    <a href="https://www.1688.com/" target="_blank" rel="noopener nofollow" class="prod-cta">🔍 ค้นหาบน 1688</a>
-  </div>
-</section>
-
 <!-- ═══════ HOW-TO VIDEO ═══════ -->
 <section class="section" id="video" style="padding-top:20px">
   <h2 style="text-align:center;font-family:'Playfair Display',serif;font-weight:800;font-size:30px;color:var(--brand-700);margin-bottom:8px">วิธีการสั่งซื้อ</h2>
