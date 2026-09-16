@@ -32,11 +32,12 @@ body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);
 .step-col .sub{font-size:11px;letter-spacing:3px;font-weight:700;color:var(--brand);text-align:center;margin-bottom:6px}
 .step-col h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--brand-700);text-align:center;margin-bottom:14px}
 .step-col .hub{text-align:center;font-size:30px;margin-bottom:12px}
-.row{display:grid;grid-template-columns:32px 34px 1fr;gap:10px;align-items:start;padding:9px 6px;border-top:1px dashed var(--border);font-size:13.5px}
+.row{display:grid;grid-template-columns:32px 30px 1fr;gap:10px;align-items:center;padding:10px 6px;border-top:1px dashed var(--border);font-size:13.5px;line-height:1.45}
 .row:first-of-type{border-top:0}
-.row .step{width:28px;height:28px;background:var(--brand-50);color:var(--brand-700);border:1.5px solid var(--brand-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px}
-.row .ic{font-size:22px}
-.row small{display:block;color:var(--ink-soft);font-size:12px;margin-top:2px}
+.row .step{width:28px;height:28px;background:var(--brand-50);color:var(--brand-700);border:1.5px solid var(--brand-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;flex-shrink:0}
+.row .ic{font-size:20px;line-height:1;text-align:center}
+.row > span:last-child{min-width:0;word-break:break-word}
+.row small{display:block;color:var(--ink-soft);font-size:11.5px;margin-top:3px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -63,8 +64,8 @@ const VIDEOS={ order:'/video-how-to-order.mp4', import:'', pay:'' };
 const ORDER_STEPS=[
   {n:1,ic:'🔐',t:'เปิดรหัสสมาชิกกับ Oversea PenGate'},
   {n:2,ic:'📝',t:'กรอกแบบฟอร์มการสั่งซื้อสินค้า'},
-  {n:3,ic:'🧮',t:'ทีมงานสรุปยอดการชำระเงินงวดที่ 1',s:'(ค่าสินค้า + ค่าขนส่งในจีน)'},
-  {n:4,ic:'💳',t:'ลูกค้าชำระเงินงวดที่ 1'},
+  {n:3,ic:'🧮',t:'ทีมงานสรุปยอดการชำระเงิน',s:'(ค่าสินค้า + ค่าขนส่งในจีน)'},
+  {n:4,ic:'💳',t:'ลูกค้าชำระเงิน'},
   {n:5,ic:'📦',t:'พนักงานโกดังจีนอัปเดตสถานะสินค้าเข้าโกดัง'},
   {n:6,ic:'🚢',t:'สินค้าขึ้นตู้ส่งมายังไทย'},
   {n:7,ic:'🏠',t:'สินค้าเข้าโกดังไทย',s:'ทีมงานแจ้งลูกค้ารับของ/จัดส่ง'},
