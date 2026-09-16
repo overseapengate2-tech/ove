@@ -312,6 +312,77 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, ...r });
     }
 
+    /* ── สินค้าแนะนำ (Taobao/Tmall/1688 shortcuts) — CRUD ผ่าน action fields ── */
+    if (req.body && (req.body.productsList || req.body.productAdd || req.body.productUpdate || req.body.productDelete)) {
+      const KEY = 'products:list';
+      async function loadProducts(){
+        const raw = await (await import('../lib/redis.js')).__redisRaw?.('GET', KEY);
+        // fallback: use a local fetch to Upstash if __redisRaw isn't exported
+        return raw ? (typeof raw === 'string' ? JSON.parse(raw) : raw) : [];
+      }
+      // Direct Upstash call (avoid extending lib/redis.js just for one key)
+      const BASE = process.env.UPSTASH_REDIS_REST_URL;
+      const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+      async function redis(...args){
+        const r = await fetch(BASE, { method:'POST', headers:{ Authorization:`Bearer ${TOKEN}`, 'Content-Type':'application/json' }, body: JSON.stringify(args) });
+        const j = await r.json();
+        if (j.error) throw new Error(j.error);
+        return j.result;
+      }
+      async function load(){
+        const raw = await redis('GET', KEY);
+        if (!raw) return [];
+        try { return typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return []; }
+      }
+      async function save(list){ await redis('SET', KEY, JSON.stringify(list)); }
+      function sanitize(p){
+        const src = String(p.source || 'taobao').toLowerCase();
+        const allowedSrc = ['taobao', 'tmall', '1688'];
+        return {
+          id: String(p.id || Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
+          title: String(p.title || '').slice(0, 200),
+          image: String(p.image || '').slice(0, 2000),
+          price: String(p.price || '').slice(0, 40),
+          url: String(p.url || '').slice(0, 2000),
+          source: allowedSrc.includes(src) ? src : 'taobao',
+          updatedAt: new Date().toISOString(),
+        };
+      }
+
+      // public list
+      if (req.body.productsList) {
+        const list = await load();
+        return res.status(200).json({ ok: true, products: list });
+      }
+
+      // write ops require admin
+      if (!isAdminReq(req)) return res.status(401).json({ ok: false, error: 'Unauthorized' });
+      const list = await load();
+
+      if (req.body.productAdd) {
+        const p = sanitize(req.body.productAdd);
+        list.unshift(p);
+        await save(list);
+        return res.status(200).json({ ok: true, product: p });
+      }
+      if (req.body.productUpdate && req.body.productUpdate.id) {
+        const id = String(req.body.productUpdate.id);
+        const idx = list.findIndex(x => x.id === id);
+        if (idx < 0) return res.status(404).json({ ok: false, error: 'ไม่พบสินค้า' });
+        const merged = sanitize({ ...list[idx], ...req.body.productUpdate, id });
+        list[idx] = merged;
+        await save(list);
+        return res.status(200).json({ ok: true, product: merged });
+      }
+      if (req.body.productDelete) {
+        const id = String(req.body.productDelete);
+        const next = list.filter(x => x.id !== id);
+        await save(next);
+        return res.status(200).json({ ok: true, removed: id });
+      }
+      return res.status(400).json({ ok: false, error: 'Unknown product action' });
+    }
+
     const e = String(email || '').trim().toLowerCase();
     if (!e) return res.status(400).json({ ok: false, error: 'ระบุ email' });
 

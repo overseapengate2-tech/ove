@@ -130,7 +130,7 @@ let cache = [];
 function api(body){
   const opts = { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey} };
   if(body) opts.body = JSON.stringify(body);
-  return fetch('/api/products', opts).then(r=>r.json());
+  return fetch('/api/address', opts).then(r=>r.json());
 }
 
 function showMsg(el, text, kind='err'){
@@ -161,7 +161,7 @@ function escapeAttr(s){ return escapeHtml(s); }
 
 async function loadList(){
   try{
-    const r = await fetch('/api/products');
+    const r = await fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ productsList:true }) });
     const j = await r.json();
     cache = (j.products || []).slice();
     renderList();
@@ -190,7 +190,7 @@ async function doSave(){
   const btn = $('#saveBtn'); btn.disabled=true; const old=btn.textContent; btn.textContent='กำลังบันทึก…';
   try{
     const id = $('#fId').value;
-    const body = id ? { update:product, id } : { product };
+    const body = id ? { productUpdate: { ...product, id } } : { productAdd: product };
     const j = await api(body);
     if(!j.ok) throw new Error(j.error||'บันทึกไม่สำเร็จ');
     showMsg($('#formMsg'),'✅ บันทึกเรียบร้อย','ok');
@@ -204,7 +204,7 @@ async function doDelete(id){
   const p = cache.find(x=>x.id===id);
   if(!confirm('ลบ "'+(p?p.title:id)+'" ?')) return;
   try{
-    const j = await api({ delete:true, id });
+    const j = await api({ productDelete: id });
     if(!j.ok) throw new Error(j.error||'ลบไม่สำเร็จ');
     await loadList();
   }catch(err){ alert(err.message); }
@@ -215,7 +215,7 @@ function tryGate(){
   if(!k){ $('#gateMsg').textContent='กรุณากรอก admin key'; return; }
   adminKey = k;
   // test with a write-shaped request that won't mutate — we just need auth check
-  fetch('/api/products', { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey}, body: JSON.stringify({ delete:true, id:'__test_probe__' }) })
+  fetch('/api/address', { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey}, body: JSON.stringify({ productDelete:'__test_probe__' }) })
     .then(r=>r.json())
     .then(j=>{
       // 401 = wrong key; anything else = ok (even "not found")

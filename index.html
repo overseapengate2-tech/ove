@@ -216,7 +216,7 @@ footer .bot{max-width:1240px;margin:26px auto 0;padding-top:16px;border-top:1px 
 </section>
 <script>
 (function(){
-  fetch('/api/products').then(r=>r.json()).then(function(j){
+  fetch('/api/address',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productsList:true})}).then(r=>r.json()).then(function(j){
     var list=(j&&j.products)||[]; if(!list.length) return;
     var section=document.getElementById('featured'), grid=document.getElementById('prodGrid');
     function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
