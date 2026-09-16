@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>จัดการสินค้าแนะนำ · Admin · Oversea PenGate</title>
+<link rel="icon" href="/logo.png"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#9C8654;--brand-600:#7C6739;--brand-700:#63522C;--brand-50:#F6F0E1;--brand-100:#E7DBC0;--ink:#3C3526;--ink-soft:#7C715B;--bg:#FAF6EE;--border:#ECE2CE;--err:#b3392f;--ok:#1a7f37}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:24px 16px}
+.wrap{max-width:1100px;margin:0 auto}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.head h1{font-size:22px;color:var(--brand-700)}
+.head a{color:var(--ink-soft);text-decoration:none;font-size:14px;font-weight:600}
+.head a:hover{color:var(--brand-700)}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(124,103,57,.06)}
+.card h2{font-size:16px;color:var(--brand-700);margin-bottom:14px}
+.gate{max-width:420px;margin:80px auto 0;text-align:center}
+.gate input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;margin-bottom:12px;font-family:inherit}
+.gate button{width:100%;padding:12px;background:var(--brand-600);color:#fff;border:0;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.form-row.full{grid-template-columns:1fr}
+label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand)}
+.btn{padding:10px 18px;border-radius:8px;border:0;cursor:pointer;font-weight:700;font-size:13.5px;font-family:inherit}
+.btn-primary{background:var(--brand-600);color:#fff}
+.btn-primary:hover{background:var(--brand-700)}
+.btn-danger{background:#fee;color:var(--err);border:1px solid #fbb}
+.btn-danger:hover{background:#fdd}
+.btn-ghost{background:#fff;border:1px solid var(--border);color:var(--ink)}
+.msg{padding:10px 14px;border-radius:8px;margin:10px 0;font-size:13.5px}
+.msg.err{background:#fdecea;color:var(--err);border:1px solid #f5c2c0}
+.msg.ok{background:#e6f4ea;color:var(--ok);border:1px solid #b7dfc1}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.item{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.item .thumb{aspect-ratio:1/1;background:var(--brand-50);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.item .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.item .thumb .ph{font-size:48px;color:var(--brand-100)}
+.item .body{padding:10px 12px;flex:1;display:flex;flex-direction:column}
+.item .src{display:inline-block;font-size:10.5px;font-weight:700;color:#fff;padding:2px 8px;border-radius:999px;margin-bottom:6px;width:fit-content}
+.src-taobao{background:#ff5000}
+.src-tmall{background:#d40000}
+.src-1688{background:#ff7300}
+.item .t{font-size:13.5px;font-weight:600;line-height:1.35;margin-bottom:6px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+.item .p{font-size:16px;font-weight:800;color:var(--brand-700);margin-bottom:8px}
+.item .row{display:flex;gap:6px;margin-top:auto}
+.item .row button{flex:1;padding:8px;font-size:12px;font-weight:600;border-radius:6px;border:0;cursor:pointer;font-family:inherit}
+.item .row .edit{background:var(--brand-50);color:var(--brand-700)}
+.item .row .del{background:#fee;color:var(--err)}
+.empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="gateView" class="gate">
+  <h1 style="font-size:22px;color:var(--brand-700);margin-bottom:16px">🔐 Admin — จัดการสินค้า</h1>
+  <input id="gateKey" type="password" placeholder="Admin key" autocomplete="off"/>
+  <button id="gateBtn" type="button">เข้าสู่ระบบ</button>
+  <div id="gateMsg" style="color:var(--err);font-size:13px;margin-top:10px;min-height:16px"></div>
+</div>
+
+<div id="mainView" class="wrap" style="display:none">
+  <div class="head">
+    <h1>🛍 จัดการสินค้าแนะนำ</h1>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="/admin.html">← Admin หลัก</a>
+      <a href="/index.html">หน้าเว็บ</a>
+      <button class="btn btn-ghost" id="logoutBtn">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="formTitle">➕ เพิ่มสินค้าใหม่</h2>
+    <div class="form-row full">
+      <div>
+        <label>ลิงก์รูปสินค้า (Image URL)</label>
+        <input id="fImage" type="url" placeholder="https://... (คลิกขวารูปบนเว็บ Taobao → Copy image address)"/>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>ชื่อสินค้า</label>
+        <input id="fTitle" type="text" placeholder="เช่น เสื้อโปโลแขนยาว ผู้ชาย"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>ราคา (แสดงบนเว็บ)</label>
+        <input id="fPrice" type="text" placeholder="เช่น ฿533 หรือ ¥98"/>
+      </div>
+      <div>
+        <label>แหล่งที่มา</label>
+        <select id="fSource">
+          <option value="taobao">Taobao</option>
+          <option value="tmall">Tmall</option>
+          <option value="1688">1688</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>ลิงก์สินค้า (URL ที่จะเด้งไปเมื่อกด)</label>
+        <input id="fUrl" type="url" placeholder="https://item.taobao.com/..."/>
+      </div>
+    </div>
+    <div id="formMsg"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-primary" id="saveBtn" type="button">💾 บันทึก</button>
+      <button class="btn btn-ghost" id="cancelBtn" type="button" style="display:none">ยกเลิกแก้ไข</button>
+    </div>
+    <input type="hidden" id="fId"/>
+  </div>
+
+  <div class="card">
+    <h2>สินค้าทั้งหมด (<span id="count">0</span>)</h2>
+    <div id="list" class="list"></div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const LS_KEY = 'opg_admin_key';
+let adminKey = '';
+let cache = [];
+
+function api(body){
+  const opts = { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey} };
+  if(body) opts.body = JSON.stringify(body);
+  return fetch('/api/products', opts).then(r=>r.json());
+}
+
+function showMsg(el, text, kind='err'){
+  el.innerHTML = text ? '<div class="msg '+kind+'">'+text+'</div>' : '';
+}
+
+function badgeClass(s){ return 'src-'+s; }
+
+function renderList(){
+  const el = $('#list');
+  $('#count').textContent = cache.length;
+  if(!cache.length){ el.innerHTML = '<div class="empty">ยังไม่มีสินค้า — เพิ่มด้านบนได้เลย</div>'; return; }
+  el.innerHTML = cache.map(p => {
+    const img = p.image ? '<img src="'+escapeAttr(p.image)+'" onerror="this.parentNode.innerHTML=\'<div class=&quot;ph&quot;>🖼️</div>\'"/>' : '<div class="ph">🖼️</div>';
+    return '<div class="item"><div class="thumb">'+img+'</div><div class="body">'
+      + '<span class="src '+badgeClass(p.source)+'">'+p.source.toUpperCase()+'</span>'
+      + '<div class="t">'+escapeHtml(p.title||'(ไม่มีชื่อ)')+'</div>'
+      + '<div class="p">'+escapeHtml(p.price||'-')+'</div>'
+      + '<div class="row"><button class="edit" data-edit="'+p.id+'">✏️ แก้</button><button class="del" data-del="'+p.id+'">🗑 ลบ</button></div>'
+      + '</div></div>';
+  }).join('');
+  el.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>startEdit(b.dataset.edit)));
+  el.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>doDelete(b.dataset.del)));
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+async function loadList(){
+  try{
+    const r = await fetch('/api/products');
+    const j = await r.json();
+    cache = (j.products || []).slice();
+    renderList();
+  }catch(err){ showMsg($('#formMsg'), 'โหลดสินค้าไม่สำเร็จ: '+err.message); }
+}
+
+function resetForm(){
+  $('#fId').value=''; $('#fImage').value=''; $('#fTitle').value=''; $('#fPrice').value=''; $('#fUrl').value=''; $('#fSource').value='taobao';
+  $('#formTitle').textContent='➕ เพิ่มสินค้าใหม่';
+  $('#cancelBtn').style.display='none';
+  showMsg($('#formMsg'), '');
+}
+
+function startEdit(id){
+  const p = cache.find(x=>x.id===id); if(!p) return;
+  $('#fId').value=p.id; $('#fImage').value=p.image||''; $('#fTitle').value=p.title||''; $('#fPrice').value=p.price||''; $('#fUrl').value=p.url||''; $('#fSource').value=p.source||'taobao';
+  $('#formTitle').textContent='✏️ แก้ไขสินค้า';
+  $('#cancelBtn').style.display='inline-block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function doSave(){
+  const product = { image:$('#fImage').value.trim(), title:$('#fTitle').value.trim(), price:$('#fPrice').value.trim(), url:$('#fUrl').value.trim(), source:$('#fSource').value };
+  if(!product.title){ showMsg($('#formMsg'),'กรุณากรอกชื่อสินค้า'); return; }
+  if(!product.url){ showMsg($('#formMsg'),'กรุณากรอกลิงก์สินค้า'); return; }
+  const btn = $('#saveBtn'); btn.disabled=true; const old=btn.textContent; btn.textContent='กำลังบันทึก…';
+  try{
+    const id = $('#fId').value;
+    const body = id ? { update:product, id } : { product };
+    const j = await api(body);
+    if(!j.ok) throw new Error(j.error||'บันทึกไม่สำเร็จ');
+    showMsg($('#formMsg'),'✅ บันทึกเรียบร้อย','ok');
+    resetForm();
+    await loadList();
+  }catch(err){ showMsg($('#formMsg'), err.message); }
+  finally{ btn.disabled=false; btn.textContent=old; }
+}
+
+async function doDelete(id){
+  const p = cache.find(x=>x.id===id);
+  if(!confirm('ลบ "'+(p?p.title:id)+'" ?')) return;
+  try{
+    const j = await api({ delete:true, id });
+    if(!j.ok) throw new Error(j.error||'ลบไม่สำเร็จ');
+    await loadList();
+  }catch(err){ alert(err.message); }
+}
+
+function tryGate(){
+  const k = $('#gateKey').value.trim();
+  if(!k){ $('#gateMsg').textContent='กรุณากรอก admin key'; return; }
+  adminKey = k;
+  // test with a write-shaped request that won't mutate — we just need auth check
+  fetch('/api/products', { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':adminKey}, body: JSON.stringify({ delete:true, id:'__test_probe__' }) })
+    .then(r=>r.json())
+    .then(j=>{
+      // 401 = wrong key; anything else = ok (even "not found")
+      if(j.error === 'Unauthorized'){ $('#gateMsg').textContent='Admin key ไม่ถูกต้อง'; adminKey=''; return; }
+      localStorage.setItem(LS_KEY, adminKey);
+      $('#gateView').style.display='none';
+      $('#mainView').style.display='block';
+      loadList();
+    })
+    .catch(err=>{ $('#gateMsg').textContent=err.message; adminKey=''; });
+}
+
+$('#gateBtn').addEventListener('click', tryGate);
+$('#gateKey').addEventListener('keydown', e=>{ if(e.key==='Enter') tryGate(); });
+$('#saveBtn').addEventListener('click', doSave);
+$('#cancelBtn').addEventListener('click', resetForm);
+$('#logoutBtn').addEventListener('click', ()=>{ localStorage.removeItem(LS_KEY); location.reload(); });
+
+// auto-login if saved
+const saved = localStorage.getItem(LS_KEY);
+if(saved){ $('#gateKey').value = saved; tryGate(); }
+</script>
+
+</body>
+</html>
