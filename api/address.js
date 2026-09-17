@@ -222,8 +222,16 @@ export default async function handler(req, res) {
       if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ ok: false, error: 'รูปแบบอีเมลไม่ถูกต้อง' });
       if (password.length < 6) return res.status(400).json({ ok: false, error: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' });
       if (password !== confirmPassword) return res.status(400).json({ ok: false, error: 'รหัสผ่านไม่ตรงกัน' });
-      // ต้องยืนยัน OTP เบอร์นี้ก่อน — verify กับ TBS ด้วย token ที่เก็บไว้ตอน otpSend
       const phoneKey = normalizePhone(phone);
+      // เช็คอีเมล/เบอร์ซ้ำก่อน verifyOtp เพื่อไม่เผาโค้ด OTP เปล่าๆ ตอนเจอ dup
+      const existingByEmail = await getIdByEmail(email);
+      if (existingByEmail) return res.status(409).json({ ok: false, error: 'อีเมลนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ' });
+      {
+        const _all = await listAccounts();
+        const _dup = _all.find(a => normalizePhone(String(a.phone || '')) === phoneKey);
+        if (_dup) return res.status(409).json({ ok: false, error: 'เบอร์โทรนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ หรือใช้เบอร์อื่น' });
+      }
+      // ผ่าน dup check แล้วค่อย verify OTP — token จะถูกใช้จริงเมื่อสมัครสำเร็จเท่านั้น
       const token = await getOtp(phoneKey);
       if (!token || !otpCode) {
         return res.status(401).json({ ok: false, error: 'ยืนยัน OTP ไม่ผ่าน — กรุณาขอ OTP แล้วกรอกรหัส' });
@@ -233,16 +241,6 @@ export default async function handler(req, res) {
         if (!v.valid) return res.status(401).json({ ok: false, error: 'รหัส OTP ไม่ถูกต้อง หรือหมดอายุ' });
       } catch (err) {
         return res.status(502).json({ ok: false, error: err.message || 'ตรวจสอบ OTP ไม่สำเร็จ' });
-      }
-      // เช็คอีเมลซ้ำ
-      const existingByEmail = await getIdByEmail(email);
-      if (existingByEmail) return res.status(409).json({ ok: false, error: 'อีเมลนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ' });
-      // เช็คเบอร์ซ้ำ — 1 เบอร์ = 1 บัญชี
-      {
-        const _all = await listAccounts();
-        const _phoneNorm = normalizePhone(phone);
-        const _dup = _all.find(a => normalizePhone(String(a.phone || '')) === _phoneNorm);
-        if (_dup) return res.status(409).json({ ok: false, error: 'เบอร์โทรนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ หรือใช้เบอร์อื่น' });
       }
       // สร้าง internal id (hex 16 ตัว)
       const internalId = randomBytes(8).toString('hex').toUpperCase();
@@ -322,11 +320,6 @@ export default async function handler(req, res) {
     /* ── สินค้าแนะนำ (Taobao/Tmall/1688 shortcuts) — CRUD ผ่าน action fields ── */
     if (req.body && (req.body.productsList || req.body.productAdd || req.body.productUpdate || req.body.productDelete)) {
       const KEY = 'products:list';
-      async function loadProducts(){
-        const raw = await (await import('../lib/redis.js')).__redisRaw?.('GET', KEY);
-        // fallback: use a local fetch to Upstash if __redisRaw isn't exported
-        return raw ? (typeof raw === 'string' ? JSON.parse(raw) : raw) : [];
-      }
       // Direct Upstash call (avoid extending lib/redis.js just for one key)
       const BASE = process.env.UPSTASH_REDIS_REST_URL;
       const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -336,21 +329,44 @@ export default async function handler(req, res) {
         if (j.error) throw new Error(j.error);
         return j.result;
       }
-      async function load(){
-        const raw = await redis('GET', KEY);
-        if (!raw) return [];
-        try { return typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return []; }
+      const VKEY = KEY + ':v';
+      async function loadVersioned(){
+        const [raw, v] = await Promise.all([redis('GET', KEY), redis('GET', VKEY)]);
+        let list = [];
+        if (raw) { try { list = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch {} }
+        return { list, version: Number(v) || 0 };
       }
-      async function save(list){ await redis('SET', KEY, JSON.stringify(list)); }
+      // Atomic CAS via Lua: only writes if the version we read matches; bumps version on success
+      const CAS_LUA = "local cur = tonumber(redis.call('GET', KEYS[2]) or '0') if cur ~= tonumber(ARGV[2]) then return 0 end redis.call('SET', KEYS[1], ARGV[1]) redis.call('INCR', KEYS[2]) return 1";
+      async function saveIfUnchanged(list, expectedVersion){
+        const r = await redis('EVAL', CAS_LUA, 2, KEY, VKEY, JSON.stringify(list), String(expectedVersion));
+        return Number(r) === 1;
+      }
+      // Retry loop protects productAdd/Update/Delete from concurrent-writer races
+      async function mutate(fn){
+        for (let i = 0; i < 5; i++) {
+          const { list, version } = await loadVersioned();
+          const result = fn(list);
+          if (result.skip) return result.response;
+          if (await saveIfUnchanged(result.list, version)) return result.response;
+        }
+        throw new Error('ระบบไม่ว่าง กรุณาลองใหม่');
+      }
       function sanitize(p){
         const src = String(p.source || 'taobao').toLowerCase();
         const allowedSrc = ['taobao', 'tmall', '1688'];
+        let url = String(p.url || '').slice(0, 2000).trim();
+        if (url) {
+          let ok = false;
+          try { const u = new URL(url); ok = (u.protocol === 'http:' || u.protocol === 'https:'); } catch {}
+          if (!ok) { const e = new Error('URL สินค้าต้องขึ้นต้นด้วย http:// หรือ https://'); e.status = 400; throw e; }
+        }
         return {
           id: String(p.id || Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
           title: String(p.title || '').slice(0, 200),
           image: String(p.image || '').slice(0, 2000),
           price: String(p.price || '').slice(0, 40),
-          url: String(p.url || '').slice(0, 2000),
+          url,
           source: allowedSrc.includes(src) ? src : 'taobao',
           updatedAt: new Date().toISOString(),
         };
@@ -358,34 +374,43 @@ export default async function handler(req, res) {
 
       // public list
       if (req.body.productsList) {
-        const list = await load();
+        const { list } = await loadVersioned();
         return res.status(200).json({ ok: true, products: list });
       }
 
       // write ops require admin
       if (!isAdminReq(req)) return res.status(401).json({ ok: false, error: 'Unauthorized' });
-      const list = await load();
 
-      if (req.body.productAdd) {
-        const p = sanitize(req.body.productAdd);
-        list.unshift(p);
-        await save(list);
-        return res.status(200).json({ ok: true, product: p });
-      }
-      if (req.body.productUpdate && req.body.productUpdate.id) {
-        const id = String(req.body.productUpdate.id);
-        const idx = list.findIndex(x => x.id === id);
-        if (idx < 0) return res.status(404).json({ ok: false, error: 'ไม่พบสินค้า' });
-        const merged = sanitize({ ...list[idx], ...req.body.productUpdate, id });
-        list[idx] = merged;
-        await save(list);
-        return res.status(200).json({ ok: true, product: merged });
-      }
-      if (req.body.productDelete) {
-        const id = String(req.body.productDelete);
-        const next = list.filter(x => x.id !== id);
-        await save(next);
-        return res.status(200).json({ ok: true, removed: id });
+      try {
+        if (req.body.productAdd) {
+          const p = sanitize(req.body.productAdd);
+          const response = await mutate(list => ({ list: [p, ...list], response: { ok: true, product: p } }));
+          return res.status(200).json(response);
+        }
+        if (req.body.productUpdate && req.body.productUpdate.id) {
+          const id = String(req.body.productUpdate.id);
+          const response = await mutate(list => {
+            const idx = list.findIndex(x => x.id === id);
+            if (idx < 0) return { skip: true, response: { __notFound: true } };
+            const merged = sanitize({ ...list[idx], ...req.body.productUpdate, id });
+            const next = list.slice(); next[idx] = merged;
+            return { list: next, response: { ok: true, product: merged } };
+          });
+          if (response.__notFound) return res.status(404).json({ ok: false, error: 'ไม่พบสินค้า' });
+          return res.status(200).json(response);
+        }
+        if (req.body.productDelete) {
+          const id = String(req.body.productDelete);
+          const response = await mutate(list => {
+            const next = list.filter(x => x.id !== id);
+            if (next.length === list.length) return { skip: true, response: { ok: true, removed: id, changed: false } };
+            return { list: next, response: { ok: true, removed: id } };
+          });
+          return res.status(200).json(response);
+        }
+      } catch (err) {
+        const status = err.status || 500;
+        return res.status(status).json({ ok: false, error: err.message || 'error' });
       }
       return res.status(400).json({ ok: false, error: 'Unknown product action' });
     }
