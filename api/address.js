@@ -237,6 +237,13 @@ export default async function handler(req, res) {
       // เช็คอีเมลซ้ำ
       const existingByEmail = await getIdByEmail(email);
       if (existingByEmail) return res.status(409).json({ ok: false, error: 'อีเมลนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ' });
+      // เช็คเบอร์ซ้ำ — 1 เบอร์ = 1 บัญชี
+      {
+        const _all = await listAccounts();
+        const _phoneNorm = normalizePhone(phone);
+        const _dup = _all.find(a => normalizePhone(String(a.phone || '')) === _phoneNorm);
+        if (_dup) return res.status(409).json({ ok: false, error: 'เบอร์โทรนี้ถูกใช้สมัครแล้ว — กรุณาเข้าสู่ระบบ หรือใช้เบอร์อื่น' });
+      }
       // สร้าง internal id (hex 16 ตัว)
       const internalId = randomBytes(8).toString('hex').toUpperCase();
       // รหัสสมาชิกอ่านง่าย (OP-XXXX) — แสดงในโปรไฟล์ + admin
